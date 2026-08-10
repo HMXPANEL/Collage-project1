@@ -48,8 +48,9 @@ class Badge {
       title: json['title'] as String,
       description: json['description'] as String,
       icon: json['icon'] as String,
-      condition:
-          BadgeCondition.fromJson(json['condition'] as Map<String, dynamic>),
+      condition: BadgeCondition.fromJson(
+        json['condition'] as Map<String, dynamic>,
+      ),
     );
   }
 }

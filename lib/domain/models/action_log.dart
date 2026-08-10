@@ -38,23 +38,25 @@ class ActionLog {
   final DateTime? createdAt;
 
   Map<String, Object?> toRow() => {
-        if (id != null) 'id': id,
-        'action_id': actionId,
-        'action_title': actionTitle,
-        'category': category,
-        'happened_on': happenedOn.millisecondsSinceEpoch,
-        'quantity': quantity,
-        'input_unit': inputUnit,
-        'kg_co2e': kgCo2e,
-        'provisional': provisional ? 1 : 0,
-        'created_at': (createdAt ?? happenedOn).millisecondsSinceEpoch,
-      };
+    if (id != null) 'id': id,
+    'action_id': actionId,
+    'action_title': actionTitle,
+    'category': category,
+    'happened_on': happenedOn.millisecondsSinceEpoch,
+    'quantity': quantity,
+    'input_unit': inputUnit,
+    'kg_co2e': kgCo2e,
+    'provisional': provisional ? 1 : 0,
+    'created_at': (createdAt ?? happenedOn).millisecondsSinceEpoch,
+  };
 
   factory ActionLog.fromRow(Map<String, Object?> row) {
-    final happenedOn =
-        DateTime.fromMillisecondsSinceEpoch(row['happened_on'] as int);
-    final createdAt =
-        DateTime.fromMillisecondsSinceEpoch(row['created_at'] as int);
+    final happenedOn = DateTime.fromMillisecondsSinceEpoch(
+      row['happened_on'] as int,
+    );
+    final createdAt = DateTime.fromMillisecondsSinceEpoch(
+      row['created_at'] as int,
+    );
     return ActionLog(
       id: row['id'] as int?,
       actionId: row['action_id'] as String,

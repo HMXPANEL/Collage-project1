@@ -104,10 +104,7 @@ void main() {
 
     test('sum and count over an empty range are zero', () async {
       final repo = ActionLogRepository(db);
-      expect(
-        await repo.sumKgBetween(DateTime(2020), DateTime(2021)),
-        0,
-      );
+      expect(await repo.sumKgBetween(DateTime(2020), DateTime(2021)), 0);
       expect(await repo.countBetween(DateTime(2020), DateTime(2021)), 0);
     });
 
@@ -217,10 +214,7 @@ void main() {
       );
       expect(await repo.deleteById(id), 1);
       expect(
-        await repo.countBetween(
-          DateTime(2026, 8, 10),
-          DateTime(2026, 8, 11),
-        ),
+        await repo.countBetween(DateTime(2026, 8, 10), DateTime(2026, 8, 11)),
         0,
       );
     });
@@ -238,10 +232,7 @@ void main() {
       );
       await repo.wipe();
       expect(
-        await repo.countBetween(
-          DateTime(2026, 8, 10),
-          DateTime(2026, 8, 11),
-        ),
+        await repo.countBetween(DateTime(2026, 8, 10), DateTime(2026, 8, 11)),
         0,
       );
     });

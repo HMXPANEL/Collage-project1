@@ -4,13 +4,13 @@ enum EmissionCategory { transport, energy, waste, water, food, lifestyle }
 
 extension EmissionCategoryX on EmissionCategory {
   String get label => switch (this) {
-        EmissionCategory.transport => 'Transport',
-        EmissionCategory.energy => 'Energy',
-        EmissionCategory.waste => 'Waste',
-        EmissionCategory.water => 'Water',
-        EmissionCategory.food => 'Food',
-        EmissionCategory.lifestyle => 'Lifestyle',
-      };
+    EmissionCategory.transport => 'Transport',
+    EmissionCategory.energy => 'Energy',
+    EmissionCategory.waste => 'Waste',
+    EmissionCategory.water => 'Water',
+    EmissionCategory.food => 'Food',
+    EmissionCategory.lifestyle => 'Lifestyle',
+  };
 }
 
 EmissionCategory emissionCategoryFromName(String name) {

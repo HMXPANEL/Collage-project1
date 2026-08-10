@@ -29,8 +29,8 @@ class UserProfile {
   final int? reminderMinutesFromMidnight;
 
   factory UserProfile.fromRow(Map<String, Object?> row) {
-    final interests =
-        (jsonDecode(row['interests'] as String) as List).cast<String>();
+    final interests = (jsonDecode(row['interests'] as String) as List)
+        .cast<String>();
     final habits = (jsonDecode(row['habits'] as String) as Map<String, dynamic>)
         .cast<String, String>();
     return UserProfile(

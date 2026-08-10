@@ -23,6 +23,30 @@ abstract final class EcoActionTheme {
         elevation: 0,
         centerTitle: false,
       ),
+      cardTheme: CardThemeData(
+        elevation: 0,
+        color: scheme.surfaceContainerLow,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        hasFloatingPlaceholder: false,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        height: 68,
+        backgroundColor: scheme.surfaceContainerLow,
+        indicatorColor: scheme.secondaryContainer,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+      ),
     );
   }
 }

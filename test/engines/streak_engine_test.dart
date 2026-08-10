@@ -36,15 +36,7 @@ void main() {
   });
 
   test('bestStreak finds the longest historical run', () {
-    final days = {
-      day(0),
-      day(1),
-      day(2),
-      day(4),
-      day(5),
-      day(6),
-      day(7),
-    };
+    final days = {day(0), day(1), day(2), day(4), day(5), day(6), day(7)};
     expect(engine.bestStreak(days), 4);
   });
 }

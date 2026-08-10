@@ -24,17 +24,17 @@ class ActionImpactSpec {
     required this.factorId,
     required this.quantityUnit,
     this.quantityLabel,
-  })  : type = ImpactType.perUnit,
-        baselineFactorId = null,
-        alternativeFactorId = null;
+  }) : type = ImpactType.perUnit,
+       baselineFactorId = null,
+       alternativeFactorId = null;
 
   const ActionImpactSpec.baselineAlternative({
     required this.baselineFactorId,
     required this.alternativeFactorId,
     required this.quantityUnit,
     this.quantityLabel,
-  })  : type = ImpactType.baselineAlternative,
-        factorId = null;
+  }) : type = ImpactType.baselineAlternative,
+       factorId = null;
 
   final ImpactType type;
   final String? factorId;

@@ -149,8 +149,10 @@ void main() {
       factorId: 'verified_low',
       quantityUnit: 'use',
     );
-    final clean =
-        engine.estimate(spec: spec, factors: {verifiedLow.id: verifiedLow});
+    final clean = engine.estimate(
+      spec: spec,
+      factors: {verifiedLow.id: verifiedLow},
+    );
     expect(clean.isProvisional, isFalse);
     expect(clean.uncertainty, 'LOW');
 

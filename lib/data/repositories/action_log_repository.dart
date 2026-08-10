@@ -21,10 +21,7 @@ class ActionLogRepository {
   }
 
   /// Logs from [start] (inclusive) to [endExclusive).
-  Future<List<ActionLog>> between(
-    DateTime start,
-    DateTime endExclusive,
-  ) async {
+  Future<List<ActionLog>> between(DateTime start, DateTime endExclusive) async {
     final rows = await _db.query(
       _table,
       where: 'happened_on >= ? AND happened_on < ?',

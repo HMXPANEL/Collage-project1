@@ -34,8 +34,11 @@ void main() {
         contains(factor.status),
         reason: 'factor ${factor.id}',
       );
-      expect(factor.status, equals(FactorStatus.provisional),
-          reason: 'no factor may be marked verified before Phase 2b');
+      expect(
+        factor.status,
+        equals(FactorStatus.provisional),
+        reason: 'no factor may be marked verified before Phase 2b',
+      );
     }
   });
 
@@ -55,8 +58,9 @@ void main() {
   });
 
   test('actions parse with an impact spec', () async {
-    final walk =
-        (await catalog.actions()).firstWhere((a) => a.id == 'walk_short_route');
+    final walk = (await catalog.actions()).firstWhere(
+      (a) => a.id == 'walk_short_route',
+    );
     expect(walk.impact.type, ImpactType.baselineAlternative);
     expect(walk.impact.quantityUnit, 'km');
   });

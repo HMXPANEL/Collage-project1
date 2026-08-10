@@ -169,11 +169,7 @@ class CatalogRepository {
     return issues;
   }
 
-  void _checkUnique(
-    String kind,
-    Iterable<String> ids,
-    List<String> issues,
-  ) {
+  void _checkUnique(String kind, Iterable<String> ids, List<String> issues) {
     final seen = <String>{};
     for (final id in ids) {
       if (!seen.add(id)) {

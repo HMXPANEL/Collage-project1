@@ -15,15 +15,11 @@ class ChallengeProgressRepository {
     DateTime dateDay,
     double amount,
   ) async {
-    await _db.insert(
-      _table,
-      {
-        'challenge_id': challengeId,
-        'date_day': dateOnly(dateDay).millisecondsSinceEpoch,
-        'amount': amount,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await _db.insert(_table, {
+      'challenge_id': challengeId,
+      'date_day': dateOnly(dateDay).millisecondsSinceEpoch,
+      'amount': amount,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<double> total(String challengeId) async {

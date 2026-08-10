@@ -8,14 +8,10 @@ class BadgeRepository {
   static const String _table = 'badges_earned';
 
   Future<void> award(String badgeId) async {
-    await _db.insert(
-      _table,
-      {
-        'badge_id': badgeId,
-        'earned_on': DateTime.now().millisecondsSinceEpoch,
-      },
-      conflictAlgorithm: ConflictAlgorithm.ignore,
-    );
+    await _db.insert(_table, {
+      'badge_id': badgeId,
+      'earned_on': DateTime.now().millisecondsSinceEpoch,
+    }, conflictAlgorithm: ConflictAlgorithm.ignore);
   }
 
   Future<bool> has(String badgeId) async {
