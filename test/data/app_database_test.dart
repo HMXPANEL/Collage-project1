@@ -248,12 +248,12 @@ void main() {
   });
 
   group('ChallengeProgressRepository', () {
-    test('setAmount upserts per challenge/day and total sums', () async {
+    test('setAmount upserts per challenge/day and sums across days', () async {
       final repo = ChallengeProgressRepository(db);
       await repo.setAmount('green_week', DateTime(2026, 8, 10), 1);
       await repo.setAmount('green_week', DateTime(2026, 8, 11), 1);
       await repo.setAmount('green_week', DateTime(2026, 8, 11), 1);
-      expect(await repo.total('green_week'), 3);
+      expect(await repo.total('green_week'), 2.0);
       expect(await repo.forChallenge('green_week'), hasLength(2));
       expect(await repo.total('other'), 0);
     });

@@ -154,7 +154,11 @@ void main() {
     expect(clean.isProvisional, isFalse);
     expect(clean.uncertainty, 'LOW');
 
-    final rough = engine.estimate(spec: spec, factors: factors);
+    final roughSpec = const ActionImpactSpec.perUnit(
+      factorId: 'bottle',
+      quantityUnit: 'use',
+    );
+    final rough = engine.estimate(spec: roughSpec, factors: factors);
     expect(rough.isProvisional, isTrue);
     expect(rough.uncertainty, 'HIGH');
   });
