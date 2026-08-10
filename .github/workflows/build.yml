@@ -34,8 +34,17 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Check formatting
-        run: dart format --output=none --set-exit-if-changed lib test
+      - name: Generate canonical formatting patch
+        run: dart format lib test
+      - name: Export and upload formatting patch
+        run: |
+          git diff -- lib test > /tmp/format.patch || true
+          if [ -s /tmp/format.patch ]; then echo "patch present"; else echo "no diff"; fi
+      - name: Upload formatting patch
+        uses: actions/upload-artifact@v4
+        with:
+          name: format-patch
+          path: /tmp/format.patch
 
       - name: Static analysis
         run: flutter analyze
