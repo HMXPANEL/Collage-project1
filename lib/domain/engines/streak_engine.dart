@@ -24,14 +24,8 @@ class StreakEngine {
     final todayDay = DateTime(today.year, today.month, today.day);
     final yesterday = DateTime(todayDay.year, todayDay.month, todayDay.day - 1);
 
-    DateTime? cursor;
-    if (set.contains(todayDay)) {
-      cursor = todayDay;
-    } else if (set.contains(yesterday)) {
-      cursor = yesterday;
-    }
-    if (cursor == null) return 0;
-
+    if (!set.contains(todayDay) && !set.contains(yesterday)) return 0;
+    var cursor = set.contains(todayDay) ? todayDay : yesterday;
     var count = 0;
     while (set.contains(cursor)) {
       count++;

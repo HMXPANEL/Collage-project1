@@ -31,6 +31,9 @@ jobs:
       - name: Generate Android platform scaffolding
         run: flutter create --project-name eco_action --platforms=android --org dev.ecoaction .
 
+      - name: Remove template boilerplate that flutter create adds
+        run: rm -f test/widget_test.dart
+
       - name: Install dependencies
         run: flutter pub get
 
@@ -55,9 +58,12 @@ jobs:
       - name: Build release APK
         run: flutter build apk --release
 
-      - name: Upload APK artifact
+      - name: Build debug APK
+        run: flutter build apk --debug
+
+      - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ecoaction-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: ecoaction-apks
+          path: build/app/outputs/flutter-apk/*.apk
           if-no-files-found: error
