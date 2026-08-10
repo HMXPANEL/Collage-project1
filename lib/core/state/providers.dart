@@ -4,8 +4,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../data/db/app_database.dart';
+import '../../data/repositories/action_log_repository.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../../domain/models/user_profile.dart';
+import '../../features/home/dashboard_engine.dart';
 import '../prefs/app_preferences.dart';
 
 final databaseProvider = FutureProvider<Database>((ref) {
@@ -74,4 +76,10 @@ final themeModeProvider = Provider<ThemeMode>((ref) {
     AppearancePreference.dark => ThemeMode.dark,
     AppearancePreference.system => ThemeMode.system,
   };
+});
+
+/// Everything the home dashboard shows. Invalidated after each logged action.
+final dashboardStatsProvider = FutureProvider<DashboardStats>((ref) async {
+  final db = await ref.watch(databaseProvider.future);
+  return computeDashboardStats(ActionLogRepository(db), DateTime.now());
 });
