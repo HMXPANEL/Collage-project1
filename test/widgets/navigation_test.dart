@@ -2,17 +2,35 @@ import 'package:eco_action/app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+import '../helpers/app_test_harness.dart';
 
 void main() {
+  setUpAll(sqfliteFfiInit);
+
+  late Database db;
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+    db = await openTestDatabase();
+    await seedOnboardedProfile(db);
+  });
+  tearDown(() async {
+    await db.close();
+  });
+
   Finder tab(String label) => find.descendant(
         of: find.byType(NavigationBar),
         matching: find.text(label),
       );
 
-  testWidgets('bottom navigation switches between all five tabs', (
-    tester,
-  ) async {
-    await tester.pumpWidget(const ProviderScope(child: EcoActionApp()));
+  testWidgets('bottom navigation switches between all five tabs',
+      (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(overrides: appOverrides(db), child: const EcoActionApp()),
+    );
     await tester.pumpAndSettle();
 
     expect(
