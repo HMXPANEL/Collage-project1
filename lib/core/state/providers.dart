@@ -22,12 +22,17 @@ final profileProvider = AsyncNotifierProvider<ProfileController, UserProfile?>(
 );
 
 class ProfileController extends AsyncNotifier<UserProfile?> {
+  ProfileController({ProfileRepository? repository})
+      : _repositoryOverride = repository;
+
+  final ProfileRepository? _repositoryOverride;
   late final ProfileRepository _repository;
 
   @override
   Future<UserProfile?> build() async {
-    final db = await ref.watch(databaseProvider.future);
-    _repository = ProfileRepository(db);
+    final repository = _repositoryOverride;
+    _repository = repository ??
+        ProfileRepository(await ref.watch(databaseProvider.future));
     return _repository.get();
   }
 

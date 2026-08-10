@@ -38,11 +38,13 @@ void main() {
     await container
         .read(themePreferenceProvider.notifier)
         .setAppearance(AppearancePreference.dark);
+    await tester.pump();
     expect(container.read(themeModeProvider), ThemeMode.dark);
 
     await container
         .read(themePreferenceProvider.notifier)
         .setAppearance(AppearancePreference.light);
+    await tester.pump();
     expect(container.read(themeModeProvider), ThemeMode.light);
   });
 }

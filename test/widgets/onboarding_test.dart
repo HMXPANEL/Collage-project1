@@ -1,29 +1,24 @@
 import 'package:eco_action/app.dart';
-import 'package:eco_action/data/repositories/profile_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../helpers/app_test_harness.dart';
 
 void main() {
-  setUpAll(sqfliteFfiInit);
-
-  late Database db;
-  setUp(() async {
+  setUp(() {
     SharedPreferences.setMockInitialValues({});
-    db = await openTestDatabase();
-  });
-  tearDown(() async {
-    await db.close();
   });
 
   testWidgets('onboarding flow collects answers, saves profile, lands on home',
       (tester) async {
+    final repository = MemoryProfileRepository();
     await tester.pumpWidget(
-      ProviderScope(overrides: appOverrides(db), child: const EcoActionApp()),
+      ProviderScope(
+        overrides: profileOverrides(repository),
+        child: const EcoActionApp(),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -56,7 +51,7 @@ void main() {
     await tester.tap(find.text('Finish'));
     await tester.pumpAndSettle();
 
-    final profile = await ProfileRepository(db).get();
+    final profile = repository.profile;
     expect(profile, isNotNull);
     expect(profile!.onboarded, isTrue);
     expect(profile.transportBaseline, 'scooter');

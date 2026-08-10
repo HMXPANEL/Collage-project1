@@ -1,23 +1,15 @@
 import 'package:eco_action/app.dart';
+import 'package:eco_action/domain/models/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../helpers/app_test_harness.dart';
 
 void main() {
-  setUpAll(sqfliteFfiInit);
-
-  late Database db;
-  setUp(() async {
+  setUp(() {
     SharedPreferences.setMockInitialValues({});
-    db = await openTestDatabase();
-    await seedOnboardedProfile(db);
-  });
-  tearDown(() async {
-    await db.close();
   });
 
   Finder tab(String label) => find.descendant(
@@ -27,8 +19,18 @@ void main() {
 
   testWidgets('bottom navigation switches between all five tabs',
       (tester) async {
+    final repository = MemoryProfileRepository(
+      profile: const UserProfile(
+        region: 'in',
+        transportBaseline: 'scooter',
+        onboarded: true,
+      ),
+    );
     await tester.pumpWidget(
-      ProviderScope(overrides: appOverrides(db), child: const EcoActionApp()),
+      ProviderScope(
+        overrides: profileOverrides(repository),
+        child: const EcoActionApp(),
+      ),
     );
     await tester.pumpAndSettle();
 
