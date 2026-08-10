@@ -24,18 +24,21 @@ class ProfileRepository {
 
   Future<void> save(UserProfile profile) async {
     final now = DateTime.now().millisecondsSinceEpoch;
-    await _db.insert(_table, {
-      'id': 1,
-      'region': profile.region,
-      'transport_baseline': profile.transportBaseline,
-      'daily_commute_km': profile.dailyCommuteKm,
-      'interests': jsonEncode(profile.interests),
-      'habits': jsonEncode(profile.habits),
-      'onboarded': profile.onboarded ? 1 : 0,
-      'reminder_minutes': profile.reminderMinutesFromMidnight,
-      'created_at': now,
-      'updated_at': now,
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
+    await _db.insert(
+        _table,
+        {
+          'id': 1,
+          'region': profile.region,
+          'transport_baseline': profile.transportBaseline,
+          'daily_commute_km': profile.dailyCommuteKm,
+          'interests': jsonEncode(profile.interests),
+          'habits': jsonEncode(profile.habits),
+          'onboarded': profile.onboarded ? 1 : 0,
+          'reminder_minutes': profile.reminderMinutesFromMidnight,
+          'created_at': now,
+          'updated_at': now,
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<void> clear() async {

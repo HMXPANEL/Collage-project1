@@ -5,9 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   Finder tab(String label) => find.descendant(
-    of: find.byType(NavigationBar),
-    matching: find.text(label),
-  );
+        of: find.byType(NavigationBar),
+        matching: find.text(label),
+      );
 
   testWidgets('bottom navigation switches between all five tabs', (
     tester,
