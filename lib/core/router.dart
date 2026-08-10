@@ -17,7 +17,7 @@ abstract final class AppRoutes {
   static const profile = 'profile';
 }
 
-final AppRouter = GoRouter(
+final appRouter = GoRouter(
   initialLocation: '/home',
   routes: [
     StatefulShellRoute.indexedStack(

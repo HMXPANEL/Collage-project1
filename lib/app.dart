@@ -13,7 +13,7 @@ class EcoActionApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: EcoActionTheme.light(),
       darkTheme: EcoActionTheme.dark(),
-      routerConfig: AppRouter,
+      routerConfig: appRouter,
     );
   }
 }

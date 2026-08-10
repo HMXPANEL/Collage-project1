@@ -38,7 +38,6 @@ abstract final class EcoActionTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        hasFloatingPlaceholder: false,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       ),
       navigationBarTheme: NavigationBarThemeData(
