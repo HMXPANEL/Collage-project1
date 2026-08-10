@@ -8,7 +8,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 /// In-memory repository used by widget tests so the UI never touches the
 /// native SQLite plugin inside testWidgets' fake-async zone.
 class MemoryProfileRepository implements ProfileRepository {
-  MemoryProfileRepository({UserProfile? profile}) : profile = profile;
+  MemoryProfileRepository({this.profile});
 
   UserProfile? profile;
 
