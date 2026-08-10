@@ -51,12 +51,14 @@ class ThemePreferenceController extends Notifier<AppearancePreference> {
   @override
   AppearancePreference build() {
     final prefs = ref.watch(sharedPreferencesProvider).value;
-    return prefs?.appearance ?? AppearancePreference.system;
+    return prefs == null
+        ? AppearancePreference.system
+        : AppPreferences(prefs).appearance;
   }
 
   Future<void> setAppearance(AppearancePreference value) async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
-    await prefs.setAppearance(value);
+    await AppPreferences(prefs).setAppearance(value);
     state = value;
   }
 }
