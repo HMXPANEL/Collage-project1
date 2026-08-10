@@ -286,7 +286,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
 }
 
 class _Intro extends StatelessWidget {
-  const _Intro({super.key});
+  const _Intro();
 
   @override
   Widget build(BuildContext context) {

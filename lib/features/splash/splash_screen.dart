@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../core/state/providers.dart';
+import '../../core/state/providers.dart';
 
 /// Shown while the local database loads, before routing to onboarding or the
 /// home shell. Also surfaces load failures instead of a blank screen.

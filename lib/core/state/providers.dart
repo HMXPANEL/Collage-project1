@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../data/db/app_database.dart';
-import '../data/repositories/profile_repository.dart';
-import '../domain/models/user_profile.dart';
+import '../../data/db/app_database.dart';
+import '../../data/repositories/profile_repository.dart';
+import '../../domain/models/user_profile.dart';
 import '../prefs/app_preferences.dart';
 
 final databaseProvider = FutureProvider<Database>((ref) {
