@@ -32,19 +32,19 @@ void main() {
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
-    await container.read(sharedPreferencesProvider.future);
-    expect(container.read(themeModeProvider), ThemeMode.system);
+    await tester.runAsync(() async {
+      await container.read(sharedPreferencesProvider.future);
+      expect(container.read(themeModeProvider), ThemeMode.system);
 
-    await container
-        .read(themePreferenceProvider.notifier)
-        .setAppearance(AppearancePreference.dark);
-    await tester.pump();
-    expect(container.read(themeModeProvider), ThemeMode.dark);
+      await container
+          .read(themePreferenceProvider.notifier)
+          .setAppearance(AppearancePreference.dark);
+      expect(container.read(themeModeProvider), ThemeMode.dark);
 
-    await container
-        .read(themePreferenceProvider.notifier)
-        .setAppearance(AppearancePreference.light);
-    await tester.pump();
-    expect(container.read(themeModeProvider), ThemeMode.light);
+      await container
+          .read(themePreferenceProvider.notifier)
+          .setAppearance(AppearancePreference.light);
+      expect(container.read(themeModeProvider), ThemeMode.light);
+    });
   });
 }

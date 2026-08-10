@@ -35,13 +35,14 @@ GoRouter createAppRouter(Ref ref) {
   return GoRouter(
     initialLocation: '/splash',
     redirect: (context, state) {
-      final profile = ref.read(profileProvider).valueOrNull;
+      final profileState = ref.read(profileProvider);
       final location = state.matchedLocation;
 
-      if (profile == null) {
+      if (profileState.isLoading || profileState.hasError) {
         return location == '/splash' ? null : '/splash';
       }
-      final onboarded = profile.onboarded;
+      final profile = profileState.value;
+      final onboarded = profile?.onboarded ?? false;
       if (!onboarded) {
         return location == '/welcome' ? null : '/welcome';
       }
