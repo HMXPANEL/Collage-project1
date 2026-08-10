@@ -1,0 +1,26 @@
+{
+  "version": "2026.1",
+  "challenges": [
+    {
+      "id": "green_week",
+      "title": "Green Week",
+      "description": "Complete 10 eco actions within 7 days.",
+      "icon": "green_week",
+      "rule": { "type": "countActions", "target": 10, "windowDays": 7 }
+    },
+    {
+      "id": "no_plastic_week",
+      "title": "No Plastic Week",
+      "description": "Log 3 waste-reduction actions this week.",
+      "icon": "no_plastic",
+      "rule": { "type": "countCategoryActions", "category": "waste", "target": 3, "windowDays": 7 }
+    },
+    {
+      "id": "sustainable_travel",
+      "title": "Sustainable Travel Challenge",
+      "description": "Log 3 transport actions within 7 days.",
+      "icon": "travel",
+      "rule": { "type": "countCategoryActions", "category": "transport", "target": 3, "windowDays": 7 }
+    }
+  ]
+}

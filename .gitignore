@@ -1,0 +1,21 @@
+# Dart / Flutter build output
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.metadata
+*.iml
+.idea/
+
+# Generated (android platform is scaffolded by CI, not committed)
+android/.gradle/
+android/app/debug/
+android/app/profile/
+android/app/release/
+android/local.properties
+android/key.properties
+
+# OS
+.DS_Store
+Thumbs.db

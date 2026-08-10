@@ -1,0 +1,279 @@
+{
+  "version": "2026.1",
+  "note": "Development seed catalog. More actions can be added without code changes.",
+  "actions": [
+    {
+      "id": "walk_short_route",
+      "title": "Walk instead of taking a vehicle",
+      "description": "Pick walking for trips up to a few kilometres that you would normally cover by car, scooter or bus.",
+      "whyItHelps": "Short trips are the least efficient - engines burn the most fuel in the first minutes. Replacing them with walking cuts vehicle emissions to zero and is free exercise.",
+      "category": "transport",
+      "icon": "walk",
+      "seed": true,
+      "impact": {
+        "type": "baselineAlternative",
+        "quantityUnit": "km",
+        "quantityLabel": "Distance you walked (km)",
+        "baselineFactorId": "petrol_car_km",
+        "alternativeFactorId": "walking_km"
+      }
+    },
+    {
+      "id": "cycle_commute",
+      "title": "Cycle to college or work",
+      "description": "Swap a vehicle trip for a bicycle ride for at least a couple of kilometres.",
+      "whyItHelps": "Cycling replaces fossil-fuelled kilometres with pedal power, cutting fuel use and congestion near your college.",
+      "category": "transport",
+      "icon": "cycle",
+      "seed": true,
+      "impact": {
+        "type": "baselineAlternative",
+        "quantityUnit": "km",
+        "quantityLabel": "Distance you cycled (km)",
+        "baselineFactorId": "petrol_car_km",
+        "alternativeFactorId": "cycling_km"
+      }
+    },
+    {
+      "id": "bus_over_car",
+      "title": "Take the bus instead of driving",
+      "description": "Choose a bus for a trip you would normally drive, even for part of the journey.",
+      "whyItHelps": "A full bus carries many people, so your share of its emissions is far smaller than driving alone.",
+      "category": "transport",
+      "icon": "bus",
+      "seed": true,
+      "impact": {
+        "type": "baselineAlternative",
+        "quantityUnit": "km",
+        "quantityLabel": "Distance you travelled by bus (km)",
+        "baselineFactorId": "petrol_car_km",
+        "alternativeFactorId": "bus_km"
+      }
+    },
+    {
+      "id": "switch_off_idle_electronics",
+      "title": "Switch off unused electronics",
+      "description": "Turn off lights, fans, chargers and devices left on standby, and log the hours.",
+      "whyItHelps": "Idle and standby devices keep drawing power all day. Across a month those hours add up to real wasted electricity.",
+      "category": "energy",
+      "icon": "power",
+      "seed": true,
+      "impact": {
+        "type": "perUnit",
+        "quantityUnit": "hour",
+        "quantityLabel": "Hours of devices switched off",
+        "factorId": "idle_electronics_hour"
+      }
+    },
+    {
+      "id": "led_bulb_swap",
+      "title": "Switch a bulb to LED",
+      "description": "Replace an incandescent or CFL bulb with an LED and log how many you swapped.",
+      "whyItHelps": "LEDs use roughly 75% less electricity for the same light, saving power - and emissions - for years.",
+      "category": "energy",
+      "icon": "bulb",
+      "seed": true,
+      "impact": {
+        "type": "perUnit",
+        "quantityUnit": "bulb",
+        "quantityLabel": "Number of bulbs switched to LED",
+        "factorId": "led_bulb_year"
+      }
+    },
+    {
+      "id": "natural_light",
+      "title": "Use natural light instead of bulbs",
+      "description": "Work or study beside a window with the lights off, and log each time.",
+      "whyItHelps": "Daylight is free and zero-carbon. Every hour of daylight you use replaces an hour of electric lighting.",
+      "category": "energy",
+      "icon": "sun",
+      "seed": true,
+      "impact": {
+        "type": "perUnit",
+        "quantityUnit": "use",
+        "quantityLabel": "Times you used natural light",
+        "factorId": "natural_light_use"
+      }
+    },
+    {
+      "id": "recycle_waste",
+      "title": "Recycle a load of waste",
+      "description": "Separate recyclables and log the approximate weight you recycled.",
+      "whyItHelps": "Recycling most materials emits far less carbon than making them new or dumping them in landfill.",
+      "category": "waste",
+      "icon": "recycle",
+      "seed": true,
+      "impact": {
+        "type": "perUnit",
+        "quantityUnit": "kg",
+        "quantityLabel": "Approximate weight recycled (kg)",
+        "factorId": "recycle_kg"
+      }
+    },
+    {
+      "id": "reuse_bottle",
+      "title": "Use a reusable bottle",
+      "description": "Refill a reusable bottle instead of buying a single-use one, and log each use.",
+      "whyItHelps": "Every single-use bottle needs energy, plastic and transport. A refill cancels that whole lifecycle each time.",
+      "category": "waste",
+      "icon": "bottle",
+      "seed": true,
+      "impact": {
+        "type": "perUnit",
+        "quantityUnit": "use",
+        "quantityLabel": "Times you refilled instead of buying new",
+        "factorId": "reuse_bottle_use"
+      }
+    },
+    {
+      "id": "no_plastic_bag",
+      "title": "Refuse a plastic bag",
+      "description": "Skip the plastic bag at shops and carry your own carrier.",
+      "whyItHelps": "Plastic bags are brief, throwaway products with a carbon cost across manufacturing and disposal.",
+      "category": "waste",
+      "icon": "bag",
+      "seed": true,
+      "impact": {
+        "type": "perUnit",
+        "quantityUnit": "use",
+        "quantityLabel": "Plastic bags refused",
+        "factorId": "plastic_bag_use"
+      }
+    },
+    {
+      "id": "shorter_shower",
+      "title": "Take a shorter shower",
+      "description": "Cut a couple of minutes off your shower and log the minutes saved.",
+      "whyItHelps": "Heating water is one of the biggest household energy uses. Minutes saved become kWh - and CO2e - saved.",
+      "category": "water",
+      "icon": "shower",
+      "seed": true,
+      "impact": {
+        "type": "perUnit",
+        "quantityUnit": "minute",
+        "quantityLabel": "Minutes saved",
+        "factorId": "shower_minute"
+      }
+    },
+    {
+      "id": "fix_drip_tap",
+      "title": "Fix a dripping tap",
+      "description": "Fix a leaky tap and log the days it stays fixed.",
+      "whyItHelps": "A steadily dripping hot tap wastes heated water all day, every day.",
+      "category": "water",
+      "icon": "tap",
+      "seed": true,
+      "impact": {
+        "type": "perUnit",
+        "quantityUnit": "day",
+        "quantityLabel": "Days with the leak fixed",
+        "factorId": "fix_drip_day"
+      }
+    },
+    {
+      "id": "tap_off_brushing",
+      "title": "Turn off the tap while brushing",
+      "description": "Keep the tap closed while brushing your teeth and log each time.",
+      "whyItHelps": "There is no need for the tap to run while you brush - every minute not flowed is water and energy not wasted.",
+      "category": "water",
+      "icon": "tap",
+      "seed": true,
+      "impact": {
+        "type": "perUnit",
+        "quantityUnit": "use",
+        "quantityLabel": "Times you kept the tap off",
+        "factorId": "tap_off_use"
+      }
+    },
+    {
+      "id": "plant_based_meal",
+      "title": "Have a plant-based meal",
+      "description": "Choose a meal without meat or dairy and log each main meal.",
+      "whyItHelps": "Farming, especially livestock, sits behind a large share of food emissions. One swapped meal is a direct cut.",
+      "category": "food",
+      "icon": "leaf",
+      "seed": true,
+      "impact": {
+        "type": "perUnit",
+        "quantityUnit": "meal",
+        "quantityLabel": "Plant-based main meals",
+        "factorId": "plant_meal"
+      }
+    },
+    {
+      "id": "no_food_waste",
+      "title": "Save a portion of food",
+      "description": "Eat leftovers or buy only what you will use, and log each portion saved.",
+      "whyItHelps": "Wasted food wastes all the energy and land that produced it, and rots into methane in landfill.",
+      "category": "food",
+      "icon": "plate",
+      "seed": true,
+      "impact": {
+        "type": "perUnit",
+        "quantityUnit": "meal",
+        "quantityLabel": "Portions of food saved",
+        "factorId": "portion_saved"
+      }
+    },
+    {
+      "id": "seasonal_local_meal",
+      "title": "Choose local, in-season food",
+      "description": "Buy fruit and vegetables that are local and in season, and log each meal.",
+      "whyItHelps": "Out-of-season or imported produce travels further and needs more cold chains and extra energy to grow.",
+      "category": "food",
+      "icon": "apple",
+      "seed": true,
+      "impact": {
+        "type": "perUnit",
+        "quantityUnit": "meal",
+        "quantityLabel": "Meals using local, seasonal produce",
+        "factorId": "seasonal_meal"
+      }
+    },
+    {
+      "id": "secondhand_item",
+      "title": "Buy something second-hand",
+      "description": "Choose a second-hand item instead of brand-new and log each purchase.",
+      "whyItHelps": "New products carry the emissions of producing and shipping them from scratch. Buying used spreads those emissions further.",
+      "category": "lifestyle",
+      "icon": "tag",
+      "seed": true,
+      "impact": {
+        "type": "perUnit",
+        "quantityUnit": "item",
+        "quantityLabel": "Second-hand items bought",
+        "factorId": "secondhand_item_use"
+      }
+    },
+    {
+      "id": "own_tote",
+      "title": "Carry your own tote bag",
+      "description": "Bring your own bag when shopping and log each use.",
+      "whyItHelps": "Every throwaway bag represents oil for the plastic and the energy spent making it.",
+      "category": "lifestyle",
+      "icon": "bag",
+      "seed": true,
+      "impact": {
+        "type": "perUnit",
+        "quantityUnit": "use",
+        "quantityLabel": "Times you brought your own bag",
+        "factorId": "tote_use"
+      }
+    },
+    {
+      "id": "own_container",
+      "title": "Use your own container",
+      "description": "Get takeaway or refills in your own container instead of single-use packaging, and log each use.",
+      "whyItHelps": "Food packaging is short-lived but energy-hungry. Reusing a container removes it from the waste stream again and again.",
+      "category": "lifestyle",
+      "icon": "box",
+      "seed": true,
+      "impact": {
+        "type": "perUnit",
+        "quantityUnit": "use",
+        "quantityLabel": "Times you used your own container",
+        "factorId": "own_container_use"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+name: eco_action
+description: "EcoAction - a local-first, offline-friendly personal climate action app for Android."
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.6.1
+  go_router: ^17.5.0
+  sqflite: ^2.4.3
+  intl: ^0.20.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  sqflite_common_ffi: ^2.4.2
+  sqlite3: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/content/

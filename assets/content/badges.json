@@ -1,0 +1,33 @@
+{
+  "version": "2026.1",
+  "badges": [
+    {
+      "id": "first_step",
+      "title": "First Step",
+      "description": "Completed your first action.",
+      "icon": "first_step",
+      "condition": { "type": "countTotal", "value": 1 }
+    },
+    {
+      "id": "actions_25",
+      "title": "Action Hero",
+      "description": "Completed 25 actions.",
+      "icon": "actions_25",
+      "condition": { "type": "countTotal", "value": 25 }
+    },
+    {
+      "id": "streak_7",
+      "title": "Week Warrior",
+      "description": "Kept a 7-day streak.",
+      "icon": "streak_7",
+      "condition": { "type": "bestStreak", "value": 7 }
+    },
+    {
+      "id": "challenge_done",
+      "title": "Challenge Champion",
+      "description": "Completed your first challenge.",
+      "icon": "challenge_done",
+      "condition": { "type": "challengeCompleted", "value": 1 }
+    }
+  ]
+}
