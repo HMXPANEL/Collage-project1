@@ -31,9 +31,8 @@ class UserProfile {
   factory UserProfile.fromRow(Map<String, Object?> row) {
     final interests =
         (jsonDecode(row['interests'] as String) as List).cast<String>();
-    final habits =
-        (jsonDecode(row['habits'] as String) as Map<String, dynamic>)
-            .cast<String, String>();
+    final habits = (jsonDecode(row['habits'] as String) as Map<String, dynamic>)
+        .cast<String, String>();
     return UserProfile(
       region: row['region'] as String,
       transportBaseline: row['transport_baseline'] as String?,

@@ -31,10 +31,9 @@ class ChallengeRule {
 
   factory ChallengeRule.fromJson(Map<String, dynamic> json) {
     final type = challengeRuleTypeFromName(json['type'] as String);
-    final category =
-        type == ChallengeRuleType.countCategoryActions
-            ? json['category'] as String
-            : null;
+    final category = type == ChallengeRuleType.countCategoryActions
+        ? json['category'] as String
+        : null;
     return ChallengeRule(
       type: type,
       target: (json['target'] as num).toInt(),

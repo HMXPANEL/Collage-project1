@@ -55,8 +55,8 @@ void main() {
   });
 
   test('actions parse with an impact spec', () async {
-    final walk = (await catalog.actions())
-        .firstWhere((a) => a.id == 'walk_short_route');
+    final walk =
+        (await catalog.actions()).firstWhere((a) => a.id == 'walk_short_route');
     expect(walk.impact.type, ImpactType.baselineAlternative);
     expect(walk.impact.quantityUnit, 'km');
   });
