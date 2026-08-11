@@ -106,6 +106,10 @@ class DataPortService {
     for (final log in payload.logs) {
       await _actionLogs.add(log);
     }
+    await _badges.wipe();
+    for (final badge in payload.badges) {
+      await _badges.award(badge);
+    }
     await _challengeProgress.wipe();
     for (final progress in payload.challengeProgress) {
       await _challengeProgress.setAmount(
