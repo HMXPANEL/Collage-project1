@@ -27,9 +27,14 @@ class CommunityScreen extends ConsumerWidget {
               if (you != null)
                 _YourRankCard(you: you)
               else
-                const Center(child: Text('Log your first action to join the board')),
+                const Center(
+                  child: Text('Log your first action to join the board'),
+                ),
               const SizedBox(height: 16),
-              Text('Leaderboard', style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                'Leaderboard',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               const SizedBox(height: 8),
               for (final member in snapshot.members) _RankTile(member: member),
             ],

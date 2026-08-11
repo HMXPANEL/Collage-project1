@@ -40,7 +40,12 @@ class PrivacyScreen extends StatelessWidget {
     );
   }
 
-  Widget _point(BuildContext context, IconData icon, String title, String text) {
+  Widget _point(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String text,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(

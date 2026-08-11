@@ -13,8 +13,22 @@ class _FakeSource implements CommunityDataSource {
 void main() {
   test('current user is inserted, ranked, and flagged isYou', () async {
     const source = _FakeSource([
-      CommunityMember(rank: 1, name: 'A', college: 'X', totalKg: 100, totalActions: 10, isYou: false),
-      CommunityMember(rank: 2, name: 'B', college: 'X', totalKg: 80, totalActions: 8, isYou: false),
+      CommunityMember(
+        rank: 1,
+        name: 'A',
+        college: 'X',
+        totalKg: 100,
+        totalActions: 10,
+        isYou: false,
+      ),
+      CommunityMember(
+        rank: 2,
+        name: 'B',
+        college: 'X',
+        totalKg: 80,
+        totalActions: 8,
+        isYou: false,
+      ),
     ]);
 
     final snapshot = await computeCommunitySnapshot(
@@ -34,7 +48,14 @@ void main() {
 
   test('ties share a rank and leave the next rank open', () async {
     const source = _FakeSource([
-      CommunityMember(rank: 1, name: 'A', college: 'X', totalKg: 100, totalActions: 10, isYou: false),
+      CommunityMember(
+        rank: 1,
+        name: 'A',
+        college: 'X',
+        totalKg: 100,
+        totalActions: 10,
+        isYou: false,
+      ),
     ]);
 
     final snapshot = await computeCommunitySnapshot(
@@ -49,7 +70,14 @@ void main() {
 
   test('zero activity still renders but you are at the bottom', () async {
     const source = _FakeSource([
-      CommunityMember(rank: 1, name: 'A', college: 'X', totalKg: 100, totalActions: 10, isYou: false),
+      CommunityMember(
+        rank: 1,
+        name: 'A',
+        college: 'X',
+        totalKg: 100,
+        totalActions: 10,
+        isYou: false,
+      ),
     ]);
 
     final snapshot = await computeCommunitySnapshot(
