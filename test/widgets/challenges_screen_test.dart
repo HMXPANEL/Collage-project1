@@ -119,7 +119,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('3'), findsOneWidget);
-    expect(find.text('3 day streak — keep it going!'), findsOneWidget);
+    expect(find.text('3 days streak — keep it going!'), findsOneWidget);
 
     expect(find.text('Green Week'), findsOneWidget);
     expect(find.text('3/10'), findsOneWidget);

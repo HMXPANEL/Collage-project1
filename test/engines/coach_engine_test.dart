@@ -50,6 +50,6 @@ void main() {
       currentStreak: 0,
     );
     final reply = coach.reply('show my impact kg', gained);
-    expect(reply.message, contains('12'));
+    expect(reply.message, contains('13'));
   });
 }

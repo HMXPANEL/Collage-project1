@@ -79,7 +79,7 @@ class DataPortService {
 
   Future<BackupPayload> exportAll() async {
     // Serialize the whole diary using a far-future end bound.
-    final end = DateTime.fromMillisecondsSinceEpoch(0x7fffffffffffffff);
+    final end = DateTime(9999);
     return BackupPayload(
       version: currentVersion,
       exportedAt: DateTime.now().toUtc().toIso8601String(),

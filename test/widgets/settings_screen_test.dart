@@ -39,9 +39,11 @@ void main() {
 
     expect(find.text('Theme'), findsOneWidget);
     expect(find.textContaining('07:30 AM'), findsOneWidget);
+    expect(find.text('Privacy policy'), findsOneWidget);
+
+    await tester.scrollUntilVisible(find.text('Export my data'), 200);
     expect(find.text('Export my data'), findsOneWidget);
     expect(find.text('Delete all data'), findsOneWidget);
-    expect(find.text('Privacy policy'), findsOneWidget);
   });
 }
 
