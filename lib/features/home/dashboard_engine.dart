@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 
 import '../../core/dates.dart';
 import '../../data/repositories/action_log_repository.dart';
+import '../../domain/engines/streak_engine.dart';
 import '../../domain/models/action_log.dart';
-import 'streak_engine.dart';
 
 /// Everything the home dashboard shows, computed from the action log.
 @immutable

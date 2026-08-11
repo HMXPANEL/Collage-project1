@@ -1,4 +1,5 @@
 import 'package:eco_action/app.dart';
+import 'package:eco_action/core/state/providers.dart';
 import 'package:eco_action/domain/models/action_log.dart';
 import 'package:eco_action/domain/models/user_profile.dart';
 import 'package:eco_action/features/home/dashboard_engine.dart';
@@ -33,7 +34,7 @@ void main() {
       totalActions: 2,
       currentStreak: 2,
       bestStreak: 4,
-      todayLogs: const [
+      todayLogs: [
         ActionLog(
           actionId: 'walk_short_route',
           actionTitle: 'Walk',

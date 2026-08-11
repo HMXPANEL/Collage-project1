@@ -9,7 +9,6 @@ import '../../core/widgets/estimate_chip.dart';
 import '../../core/precision/formatting.dart';
 import '../../domain/models/action_log.dart';
 import '../../domain/models/emission_factor.dart';
-import 'dashboard_engine.dart';
 
 /// Home tab: lifetime impact, current streak and today's logged actions.
 class HomeScreen extends ConsumerWidget {
@@ -116,8 +115,7 @@ class _StatCard extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final numberStyle = Theme.of(context).textTheme.headlineSmall;
     final labelStyle = Theme.of(context).textTheme.labelMedium;
-    final iconColor =
-        iconTinted ? const Color(0xFFEF6C00) : scheme.primary;
+    final iconColor = iconTinted ? const Color(0xFFEF6C00) : scheme.primary;
     return EcoCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
