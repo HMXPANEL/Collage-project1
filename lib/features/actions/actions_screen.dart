@@ -1,19 +1,133 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../core/widgets/coming_soon_screen.dart';
-import '../../core/widgets/eco_icons.dart';
+import '../../core/state/providers.dart';
+import '../../core/widgets/category_icon.dart';
+import '../../core/widgets/eco_card.dart';
+import '../../core/widgets/estimate_chip.dart';
+import '../../domain/engines/impact_engine.dart';
+import '../../domain/models/eco_action.dart';
+import '../../domain/models/emission_factor.dart';
 
-class ActionsScreen extends StatelessWidget {
+/// Action catalog grouped by category. Tapping an action opens its log screen.
+class ActionsScreen extends ConsumerWidget {
   const ActionsScreen({super.key});
 
-  static const _message = 'The action catalog arrives in Phase 6.';
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final actionsAsync = ref.watch(actionsProvider);
+    final factorsAsync = ref.watch(emissionFactorsProvider);
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Take Action')),
+      body: switch ((actionsAsync, factorsAsync)) {
+        (AsyncData(value: actions), AsyncData(value: factors)) =>
+          _CatalogList(actions: actions, factors: factors),
+        (AsyncError(error: error), _) || (_, AsyncError(error: error)) =>
+          _CatalogError(error: error, ref: ref),
+        _ => const Center(child: CircularProgressIndicator()),
+      },
+    );
+  }
+}
+
+class _CatalogError extends StatelessWidget {
+  const _CatalogError({required this.error, required this.ref});
+
+  final Object error;
+  final WidgetRef ref;
 
   @override
   Widget build(BuildContext context) {
-    return const ComingSoonScreen(
-      title: 'Take Action',
-      icon: EcoIcons.actions,
-      message: _message,
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.error_outline, size: 40),
+          const SizedBox(height: 8),
+          const Text('Could not load the action catalog.'),
+          const SizedBox(height: 12),
+          FilledButton.tonal(
+            onPressed: () {
+              ref.invalidate(actionsProvider);
+              ref.invalidate(emissionFactorsProvider);
+            },
+            child: const Text('Retry'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CatalogList extends StatelessWidget {
+  const _CatalogList({required this.actions, required this.factors});
+
+  final List<EcoAction> actions;
+  final Map<String, EmissionFactor> factors;
+
+  @override
+  Widget build(BuildContext context) {
+    final grouped = {
+      for (final category in EmissionCategory.values) category: <EcoAction>[],
+    };
+    for (final action in actions) {
+      grouped[action.category]!.add(action);
+    }
+    final engine = const ImpactEngine();
+
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        for (final category in EmissionCategory.values)
+          if (grouped[category]!.isNotEmpty) ...[
+            Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              child: Text(
+                category.label,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            for (final action in grouped[category]!)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: _ActionTile(
+                  action: action,
+                  defaultEstimate: engine.estimate(
+                    spec: action.impact,
+                    factors: factors,
+                  ),
+                ),
+              ),
+          ],
+      ],
+    );
+  }
+}
+
+class _ActionTile extends StatelessWidget {
+  const _ActionTile({required this.action, required this.defaultEstimate});
+
+  final EcoAction action;
+  final ImpactEstimate defaultEstimate;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return EcoCard(
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        leading: Icon(categoryIcon(action.category), color: scheme.primary),
+        title: Text(action.title),
+        subtitle: Text(
+          action.description,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: EstimateChip(estimateInKg: defaultEstimate.kgCo2e),
+        onTap: () => context.push('/actions/${action.id}'),
+      ),
     );
   }
 }

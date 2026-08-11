@@ -1,5 +1,7 @@
 import 'package:eco_action/app.dart';
 import 'package:eco_action/core/state/providers.dart';
+import 'package:eco_action/domain/models/eco_action.dart';
+import 'package:eco_action/domain/models/emission_factor.dart';
 import 'package:eco_action/domain/models/user_profile.dart';
 import 'package:eco_action/features/home/dashboard_engine.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +44,37 @@ void main() {
               todayKg: 0,
             ),
           ),
+          ...catalogOverrides(
+            actions: const [
+              EcoAction(
+                id: 'reuse_bottle',
+                title: 'Use a reusable bottle',
+                description: 'Refill instead of buying single-use.',
+                whyItHelps: 'Avoids plastic lifecycle emissions.',
+                category: EmissionCategory.waste,
+                icon: 'bottle',
+                impact: ActionImpactSpec.perUnit(
+                  factorId: 'reuse_bottle_use',
+                  quantityUnit: 'use',
+                  quantityLabel: 'Times you refilled',
+                ),
+              ),
+            ],
+            factors: const {
+              'reuse_bottle_use': EmissionFactor(
+                id: 'reuse_bottle_use',
+                value: 0.5,
+                unit: 'use',
+                category: EmissionCategory.waste,
+                region: 'global',
+                version: 'v1',
+                sourceName: 'test',
+                sourceReference: 'test',
+                notes: 'test',
+                kind: EmissionFactorKind.avoidance,
+              ),
+            },
+          ),
         ],
         child: const EcoActionApp(),
       ),
@@ -66,8 +99,9 @@ void main() {
 
     await tester.tap(tab('Actions'));
     await tester.pumpAndSettle();
+    expect(find.text('Take Action').hitTestable(), findsOneWidget);
     expect(
-      find.text('The action catalog arrives in Phase 6.').hitTestable(),
+      find.text('Use a reusable bottle').hitTestable(),
       findsOneWidget,
     );
 

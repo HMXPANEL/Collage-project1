@@ -5,7 +5,10 @@ import 'package:sqflite/sqflite.dart';
 
 import '../../data/db/app_database.dart';
 import '../../data/repositories/action_log_repository.dart';
+import '../../data/repositories/catalog_repository.dart';
 import '../../data/repositories/profile_repository.dart';
+import '../../domain/models/eco_action.dart';
+import '../../domain/models/emission_factor.dart';
 import '../../domain/models/user_profile.dart';
 import '../../features/home/dashboard_engine.dart';
 import '../prefs/app_preferences.dart';
@@ -82,4 +85,25 @@ final themeModeProvider = Provider<ThemeMode>((ref) {
 final dashboardStatsProvider = FutureProvider<DashboardStats>((ref) async {
   final db = await ref.watch(databaseProvider.future);
   return computeDashboardStats(ActionLogRepository(db), DateTime.now());
+});
+
+final catalogRepositoryProvider =
+    Provider<CatalogRepository>((ref) => CatalogRepository());
+
+/// Read-only action catalog from assets.
+final actionsProvider = FutureProvider<List<EcoAction>>((ref) {
+  return ref.watch(catalogRepositoryProvider).actions();
+});
+
+/// Emission factors indexed by id, used by [ImpactEngine] at estimation time.
+final emissionFactorsProvider =
+    FutureProvider<Map<String, EmissionFactor>>((ref) {
+  return ref.watch(catalogRepositoryProvider).factors();
+});
+
+/// Diary writer. Overridden in widget tests with an in-memory fake.
+final actionLogRepositoryProvider =
+    FutureProvider<ActionLogRepository>((ref) async {
+  final db = await ref.watch(databaseProvider.future);
+  return ActionLogRepository(db);
 });

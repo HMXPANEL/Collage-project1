@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/actions/action_log_screen.dart';
 import '../features/actions/actions_screen.dart';
 import '../features/challenges/challenges_screen.dart';
 import '../features/home/home_screen.dart';
@@ -19,6 +20,7 @@ abstract final class AppRoutes {
   static const home = 'home';
   static const impact = 'impact';
   static const actions = 'actions';
+  static const logAction = 'logAction';
   static const challenges = 'challenges';
   static const profile = 'profile';
 }
@@ -91,6 +93,13 @@ GoRouter createAppRouter(Ref ref) {
                 path: '/actions',
                 name: AppRoutes.actions,
                 builder: (context, state) => const ActionsScreen(),
+              ),
+              GoRoute(
+                path: '/actions/:actionId',
+                name: AppRoutes.logAction,
+                builder: (context, state) => ActionLogScreen(
+                  actionId: state.pathParameters['actionId']!,
+                ),
               ),
             ],
           ),
