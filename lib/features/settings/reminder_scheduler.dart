@@ -44,7 +44,7 @@ class LocalReminderScheduler implements ReminderScheduler {
   }) async {
     tzdata.initializeTimeZones();
     final localName = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(localName));
+    tz.setLocalLocation(tz.getLocation(localName.name));
     await _plugin.zonedSchedule(
       _reminderId,
       title,

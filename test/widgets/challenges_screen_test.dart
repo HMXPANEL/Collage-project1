@@ -5,7 +5,7 @@ import 'package:eco_action/domain/models/challenge.dart';
 import 'package:eco_action/domain/models/user_profile.dart';
 import 'package:eco_action/features/challenges/progress_engine.dart';
 import 'package:eco_action/features/home/dashboard_engine.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Badge;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -75,7 +75,7 @@ void main() {
     earnedBadgeIds: {'first_step'},
   );
 
-  Future<void> pumpApp() {
+  Future<void> pumpApp(WidgetTester tester) {
     return tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -108,7 +108,7 @@ void main() {
 
   testWidgets('challenges tab shows streaks, progress and badges',
       (tester) async {
-    await pumpApp();
+    await pumpApp(tester);
     await tester.pumpAndSettle();
     await tester.tap(
       find.descendant(

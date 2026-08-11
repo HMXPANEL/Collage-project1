@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/router.dart';
 import '../../core/state/providers.dart';
 import '../../core/prefs/app_preferences.dart';
 import '../../domain/models/user_profile.dart';
+import '../data_port.dart';
 
 /// App settings: appearance, region, daily reminder, privacy and data
 /// management (export / import / delete).
@@ -17,8 +19,6 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  bool? _reminderEnabled;
-  TimeOfDay? _reminderTime;
   String? _importError;
 
   @override
@@ -33,13 +33,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                _section(
-                    context, 'Appearance', _appearanceTile(context, themePref)),
-                _section(context, 'Personalization', [
+                ..._section(context, 'Appearance', [
+                  _appearanceTile(context, themePref),
+                ]),
+                ..._section(context, 'Personalization', [
                   _regionTile(profile),
                   _reminderTile(profile),
                 ]),
-                _section(context, 'Privacy', [
+                ..._section(context, 'Privacy', [
                   ListTile(
                     leading: const Icon(Icons.shield_outlined),
                     title: const Text('Privacy policy'),
@@ -59,7 +60,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     onTap: () => context.pushNamed(AppRoutes.methodology),
                   ),
                 ]),
-                _section(context, 'Data management', _dataTiles(context)),
+                ..._section(
+                  context,
+                  'Data management',
+                  _dataTiles(context),
+                ),
               ],
             ),
     );
@@ -129,7 +134,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  ListTile _reminderTile(UserProfile profile) {
+  SwitchListTile _reminderTile(UserProfile profile) {
     final enabled = profile.reminderMinutesFromMidnight != null;
     return SwitchListTile(
       secondary: const Icon(Icons.notifications),

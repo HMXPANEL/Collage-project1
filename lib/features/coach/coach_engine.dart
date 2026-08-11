@@ -5,7 +5,6 @@
 /// actual profile, streak and diary so the "coach" never makes things up.
 library;
 
-import '../../domain/models/eco_action.dart';
 import '../../domain/models/user_profile.dart';
 
 /// What the coach knows about the user at reply time.
@@ -16,7 +15,7 @@ class CoachContext {
     required this.totalKg,
     required this.totalActions,
     required this.currentStreak,
-    required this.habits = const {},
+    this.habits = const {},
     this.preferredActions = const [],
   });
 

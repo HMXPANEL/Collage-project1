@@ -7,6 +7,7 @@ import 'package:eco_action/domain/models/action_log.dart';
 import 'package:eco_action/domain/models/user_profile.dart';
 import 'package:eco_action/features/settings/data_port.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../helpers/app_test_harness.dart';
 
@@ -36,7 +37,7 @@ void main() {
       onboarded: true,
     ));
     await BadgeRepository(db).award('first_action');
-    await ActionLogRepository(db).add(const ActionLog(
+    await ActionLogRepository(db).add(ActionLog(
       actionId: 'led_bulb',
       actionTitle: 'Swap to LED bulbs',
       category: 'energy',
@@ -70,7 +71,7 @@ void main() {
       onboarded: true,
     ));
     await BadgeRepository(db).award('first_action');
-    await ActionLogRepository(db).add(const ActionLog(
+    await ActionLogRepository(db).add(ActionLog(
       actionId: 'led_bulb',
       actionTitle: 'Swap to LED bulbs',
       category: 'energy',

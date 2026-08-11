@@ -124,6 +124,12 @@ class DataPortService {
     await _challengeProgress.wipe();
   }
 
+  static String encode(BackupPayload payload) =>
+      const JsonEncoder.withIndent('  ').convert(payload.toJson());
+
+  static Map<String, Object?> decode(String json) =>
+      (jsonDecode(json) as Map).cast<String, Object?>();
+
   /// Rules a payload must satisfy before it can be imported. Empty = valid.
   List<String> validate(BackupPayload payload) {
     final problems = <String>[];

@@ -25,7 +25,7 @@ void main() {
     await db.close();
   });
 
-  const now = DateTime(2026, 8, 11, 14);
+  final now = DateTime(2026, 8, 11, 14);
 
   const greenWeek = Challenge(
     id: 'green_week',

@@ -23,7 +23,7 @@ void main() {
         overrides: [
           ...profileOverrides(repository),
           coachServiceProvider.overrideWith(
-            () => _GreetingCoach(),
+            (ref) => _GreetingCoach(),
           ),
         ],
         child: const MaterialApp(home: CoachScreen()),
