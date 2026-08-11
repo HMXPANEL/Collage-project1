@@ -4,12 +4,10 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/state/providers.dart';
 import '../../core/widgets/eco_card.dart';
-import '../../core/widgets/estimate_chip.dart';
 import '../../core/precision/formatting.dart';
 import '../../domain/engines/impact_engine.dart';
 import '../../domain/models/action_log.dart';
 import '../../domain/models/eco_action.dart';
-import '../../domain/models/emission_factor.dart';
 
 /// Detail + logging screen for one catalog action.
 class ActionLogScreen extends ConsumerStatefulWidget {

@@ -78,8 +78,11 @@ class MemoryActionLogRepository implements ActionLogRepository {
 
   @override
   Future<double> sumKgBetween(DateTime start, DateTime endExclusive) async {
-    return (await between(start, endExclusive))
-        .fold(0.0, (sum, l) => sum + l.kgCo2e);
+    var total = 0.0;
+    for (final l in await between(start, endExclusive)) {
+      total += l.kgCo2e;
+    }
+    return total;
   }
 
   @override
@@ -133,7 +136,8 @@ List<Override> catalogOverrides({
   required List<EcoAction> actions,
   required Map<String, EmissionFactor> factors,
   MemoryActionLogRepository? actionLogs,
-}) => [
+}) =>
+    [
       actionsProvider.overrideWith((ref) async => actions),
       emissionFactorsProvider.overrideWith((ref) async => factors),
       if (actionLogs != null)

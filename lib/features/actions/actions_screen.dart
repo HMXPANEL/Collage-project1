@@ -22,9 +22,10 @@ class ActionsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Take Action')),
       body: switch ((actionsAsync, factorsAsync)) {
-        (AsyncData(value: actions), AsyncData(value: factors)) =>
+        (AsyncData(value: final actions), AsyncData(value: final factors)) =>
           _CatalogList(actions: actions, factors: factors),
-        (AsyncError(error: error), _) || (_, AsyncError(error: error)) =>
+        (AsyncError(error: final error), _) ||
+        (_, AsyncError(error: final error)) =>
           _CatalogError(error: error, ref: ref),
         _ => const Center(child: CircularProgressIndicator()),
       },
