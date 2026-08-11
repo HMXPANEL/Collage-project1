@@ -87,7 +87,7 @@ void main() {
     expect(profile, isNotNull);
     expect(profile!.region, 'in');
     expect((await BadgeRepository(db).earned()), ['first_action']);
-    final end = DateTime.fromMillisecondsSinceEpoch(0x7fffffffffffffff);
+    final end = DateTime(9999);
     final logs = await ActionLogRepository(db).between(
       DateTime.fromMillisecondsSinceEpoch(0),
       end,
