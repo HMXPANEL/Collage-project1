@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 /// Design tokens for the EcoAction identity: nature greens on a deep
@@ -41,7 +42,7 @@ abstract final class EcoActionTheme {
         onSurfaceVariant: Color(0xFF93A89B),
         outline: Color(0xFF547060),
         outlineVariant: Color(0xFF33483C),
-        surfaceVariant: Color(0xFF33483C),
+        surfaceContainerHighest: Color(0xFF33483C),
         shadow: Colors.black,
         scrim: Colors.black,
         inverseSurface: Color(0xFFE7F2EA),
@@ -80,7 +81,7 @@ abstract final class EcoActionTheme {
         onSurfaceVariant: Color(0xFF4C5F52),
         outline: Color(0xFF73867A),
         outlineVariant: Color(0xFFC2CFC6),
-        surfaceVariant: Color(0xFFDEE4E0),
+        surfaceContainerHighest: Color(0xFFDEE4E0),
         shadow: Colors.black,
         scrim: Colors.black,
         inverseSurface: Color(0xFF2C3A31),

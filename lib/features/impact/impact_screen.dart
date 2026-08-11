@@ -9,6 +9,7 @@ import '../../core/widgets/eco_card.dart';
 import '../../core/widgets/ui.dart';
 import '../../core/precision/formatting.dart';
 import '../../domain/models/emission_factor.dart';
+import 'impact_engine.dart';
 
 const _rangeOptions = [
   (days: 7, label: '7D'),

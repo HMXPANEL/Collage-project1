@@ -185,7 +185,7 @@ class _StreakPill extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           Text(
-            '${streak}-day streak',
+            '$streak-day streak',
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
