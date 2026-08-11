@@ -6,6 +6,22 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
+  setUpAll(sqfliteFfiInit);
+
+  late Database db;
+  setUp(() async {
+    db = await databaseFactoryFfi.openDatabase(
+      inMemoryDatabasePath,
+      options: OpenDatabaseOptions(
+        version: AppDatabaseSchema.version,
+        onCreate: AppDatabaseSchema.create,
+      ),
+    );
+  });
+  tearDown(() async {
+    await db.close();
+  });
+
   group('DashboardStats', () {
     test('hasAnyActivity is false when no actions exist', () {
       const stats = DashboardStats(
@@ -20,15 +36,6 @@ void main() {
     });
 
     test('computeDashboardStats aggregates totals and streaks', () async {
-      sqfliteFfiInit();
-      final db = await databaseFactoryFfi.openDatabase(
-        inMemoryDatabasePath,
-        options: OpenDatabaseOptions(
-          version: AppDatabaseSchema.version,
-          onCreate: AppDatabaseSchema.create,
-        ),
-      );
-
       final repository = ActionLogRepository(db);
       final now = DateTime(2026, 8, 11, 14);
 
@@ -86,14 +93,6 @@ void main() {
     });
 
     test('zero streak without yesterday activity', () async {
-      sqfliteFfiInit();
-      final db = await databaseFactoryFfi.openDatabase(
-        inMemoryDatabasePath,
-        options: OpenDatabaseOptions(
-          version: AppDatabaseSchema.version,
-          onCreate: AppDatabaseSchema.create,
-        ),
-      );
       final repository = ActionLogRepository(db);
       await repository.add(
         ActionLog(
@@ -114,8 +113,6 @@ void main() {
       expect(stats.todayLogs, isEmpty);
       expect(stats.currentStreak, 0);
       expect(stats.bestStreak, 1);
-
-      await db.close();
     });
   });
 }

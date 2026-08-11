@@ -1,4 +1,6 @@
 import 'package:eco_action/app.dart';
+import 'package:eco_action/core/state/providers.dart';
+import 'package:eco_action/features/home/dashboard_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,7 +18,19 @@ void main() {
     final repository = MemoryProfileRepository();
     await tester.pumpWidget(
       ProviderScope(
-        overrides: profileOverrides(repository),
+        overrides: [
+          ...profileOverrides(repository),
+          dashboardStatsProvider.overrideWith(
+            (ref) async => const DashboardStats(
+              totalKg: 0,
+              totalActions: 0,
+              currentStreak: 0,
+              bestStreak: 0,
+              todayLogs: [],
+              todayKg: 0,
+            ),
+          ),
+        ],
         child: const EcoActionApp(),
       ),
     );
@@ -61,9 +75,7 @@ void main() {
 
     expect(find.byType(NavigationBar), findsOneWidget);
     expect(
-      find
-          .text("Dashboard and today's actions arrive in Phase 5.")
-          .hitTestable(),
+      find.text('Your climate journey').hitTestable(),
       findsOneWidget,
     );
   });
