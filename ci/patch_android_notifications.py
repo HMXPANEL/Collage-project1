@@ -62,15 +62,20 @@ def main():
             "        isCoreLibraryDesugaringEnabled = true\n",
             1,
         )
-        MANIFEST_sentinel = "dependencies {\n"
-        if MANIFEST_sentinel not in gradle:
-            fail("app/build.gradle.kts has no dependencies block")
-        gradle = gradle.replace(
-            "dependencies {\n",
-            "dependencies {\n"
-            '    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")\n',
-            1,
-        )
+        if "coreLibraryDesugaring" not in gradle:
+            dep = (
+                'dependencies {\n'
+                '    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")\n'
+                '}\n'
+            )
+            if "flutter {" in gradle:
+                gradle = gradle.replace(
+                    "flutter {\n",
+                    dep + "\nflutter {\n",
+                    1,
+                )
+            else:
+                gradle = gradle.rstrip("\n") + "\n\n" + dep
         GRADLE.write_text(gradle)
         print("[patch-android] enabled core library desugaring")
 
