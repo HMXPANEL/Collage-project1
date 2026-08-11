@@ -31,4 +31,7 @@ class BadgeRepository {
     final rows = await _db.query(_table, orderBy: 'earned_on ASC');
     return [for (final row in rows) row['badge_id'] as String];
   }
+
+  /// Removes every earned badge (used by Settings → Delete all data).
+  Future<int> wipe() => _db.delete(_table);
 }

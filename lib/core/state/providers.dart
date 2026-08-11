@@ -7,13 +7,18 @@ import '../../data/db/app_database.dart';
 import '../../data/repositories/action_log_repository.dart';
 import '../../data/repositories/badge_repository.dart';
 import '../../data/repositories/catalog_repository.dart';
+import '../../data/repositories/challenge_progress_repository.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../../domain/models/eco_action.dart';
 import '../../domain/models/emission_factor.dart';
 import '../../domain/models/user_profile.dart';
 import '../../features/challenges/progress_engine.dart';
+import '../../features/community/community_engine.dart';
+import '../../features/coach/coach_engine.dart';
 import '../../features/home/dashboard_engine.dart';
 import '../../features/impact/impact_engine.dart';
+import '../../features/settings/data_port.dart';
+import '../../features/settings/reminder_scheduler.dart';
 import '../prefs/app_preferences.dart';
 
 final databaseProvider = FutureProvider<Database>((ref) {
@@ -128,5 +133,53 @@ final challengesProvider = FutureProvider<ChallengesSnapshot>((ref) async {
     logs: await ref.watch(actionLogRepositoryProvider.future),
     badgeRepo: BadgeRepository(db),
     now: DateTime.now(),
+  );
+});
+
+/// Demo community leaderboard, built from the user's real totals plus seeded
+/// peers. During onboarding-refresh it may briefly fall back to zeroes.
+final communityProvider = FutureProvider<CommunitySnapshot>((ref) async {
+  final stats = await ref.watch(dashboardStatsProvider.future);
+  return computeCommunitySnapshot(
+    source: const DemoCommunityDataSource(),
+    totalKg: stats.totalKg,
+    totalActions: stats.totalActions,
+  );
+});
+
+/// Coach implementation. Offline and deterministic; override in tests.
+final coachServiceProvider =
+    Provider<CoachService>((ref) => const RulesCoach());
+
+/// Daily reminder scheduler. Uses the device plugin in production; override
+/// in tests to avoid platform channels.
+final reminderSchedulerProvider = FutureProvider<ReminderScheduler>((ref) {
+  return LocalReminderScheduler.create();
+});
+
+/// Full-database backup/restore, used by Settings → Data management.
+final dataPortProvider = FutureProvider<DataPortService>((ref) async {
+  final db = await ref.watch(databaseProvider.future);
+  return DataPortService(
+    profile: ProfileRepository(db),
+    actionLogs: ActionLogRepository(db),
+    badges: BadgeRepository(db),
+    challengeProgress: ChallengeProgressRepository(db),
+  );
+});
+
+/// What the coach knows about this user right now.
+final coachContextProvider = FutureProvider<CoachContext>((ref) async {
+  final profile = (await ref.watch(profileProvider.future))!;
+  final stats = await ref.watch(dashboardStatsProvider.future);
+  return CoachContext(
+    profile: profile,
+    categories: profile.interests,
+    totalKg: stats.totalKg,
+    totalActions: stats.totalActions,
+    currentStreak: stats.currentStreak,
+    habits: profile.habits,
+    preferredActions:
+        stats.todayLogs.map((log) => log.actionTitle).toList(),
   );
 });

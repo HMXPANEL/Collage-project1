@@ -34,6 +34,9 @@ jobs:
       - name: Remove template boilerplate that flutter create adds
         run: rm -f test/widget_test.dart
 
+      - name: Patch Android platform for local notifications
+        run: python3 ci/patch_android_notifications.py
+
       - name: Install dependencies
         run: flutter pub get
 

@@ -59,6 +59,8 @@ class HomeScreen extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
+                  _CoachCard(),
+                  const SizedBox(height: 16),
                   Text('Today', style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 8),
                   if (stats.todayLogs.isEmpty)
@@ -156,6 +158,24 @@ class _EmptyToday extends StatelessWidget {
             label: const Text('Browse actions'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _CoachCard extends StatelessWidget {
+  const _CoachCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return EcoCard(
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        leading: const Icon(Icons.assistant),
+        title: const Text('Climate Coach'),
+        subtitle: const Text('Offline guidance for your next step'),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => context.push('/coach'),
       ),
     );
   }

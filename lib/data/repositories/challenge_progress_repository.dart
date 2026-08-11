@@ -44,5 +44,10 @@ class ChallengeProgressRepository {
     return rows.map(ChallengeProgress.fromRow).toList();
   }
 
+  Future<List<ChallengeProgress>> all() async {
+    final rows = await _db.query(_table, orderBy: 'date_day ASC');
+    return rows.map(ChallengeProgress.fromRow).toList();
+  }
+
   Future<int> wipe() => _db.delete(_table);
 }

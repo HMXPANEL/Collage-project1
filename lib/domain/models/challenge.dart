@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import '../../core/dates.dart';
+
 enum ChallengeRuleType { countActions, countCategoryActions }
 
 ChallengeRuleType challengeRuleTypeFromName(String name) {
@@ -94,5 +96,15 @@ class ChallengeProgress {
       dateDay: DateTime.fromMillisecondsSinceEpoch(row['date_day'] as int),
       amount: (row['amount'] as num).toDouble(),
     );
+  }
+
+  Map<String, Object?> toRow() {
+    final day = dateOnly(dateDay);
+    return {
+      if (id != null) 'id': id,
+      'challenge_id': challengeId,
+      'date_day': day.millisecondsSinceEpoch,
+      'amount': amount,
+    };
   }
 }

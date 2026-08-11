@@ -131,10 +131,9 @@ void main() {
     await tester.tap(tab('Profile'));
     await tester.pumpAndSettle();
     expect(
-      find
-          .text('Profile, settings and your coach arrive in later phases.')
-          .hitTestable(),
+      find.text('Climate Coach').hitTestable(),
       findsOneWidget,
     );
+    expect(find.text('Community leaderboard').hitTestable(), findsOneWidget);
   });
 }

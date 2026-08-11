@@ -43,4 +43,18 @@ class UserProfile {
       reminderMinutesFromMidnight: row['reminder_minutes'] as int?,
     );
   }
+
+  /// Row form used by persistence and backup export.
+  Map<String, Object?> toRow() => {
+        'id': 1,
+        'region': region,
+        'transport_baseline': transportBaseline,
+        'daily_commute_km': dailyCommuteKm,
+        'interests': jsonEncode(interests),
+        'habits': jsonEncode(habits),
+        'onboarded': onboarded ? 1 : 0,
+        'reminder_minutes': reminderMinutesFromMidnight,
+        'created_at': DateTime.now().millisecondsSinceEpoch,
+        'updated_at': DateTime.now().millisecondsSinceEpoch,
+      };
 }
