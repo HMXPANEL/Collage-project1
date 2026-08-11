@@ -37,7 +37,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('EcoAction'), findsOneWidget);
-    await tester.tap(find.text('Continue'));
+    await tester.tap(find.text('Get Started'));
     await tester.pumpAndSettle();
 
     expect(find.text('How do you usually travel?'), findsOneWidget);
@@ -61,8 +61,8 @@ void main() {
     await tester.tap(find.text('Continue'));
     await tester.pumpAndSettle();
 
-    expect(find.text('You are all set'), findsOneWidget);
-    await tester.tap(find.text('Finish'));
+    expect(find.text("You're all set."), findsOneWidget);
+    await tester.tap(find.text('Start My Journey'));
     await tester.pumpAndSettle();
 
     final profile = repository.profile;

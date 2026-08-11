@@ -116,10 +116,17 @@ final actionLogRepositoryProvider =
   return ActionLogRepository(db);
 });
 
+/// Chart window selected on the Impact tab. Days, or null for all time.
+final impactRangeProvider = StateProvider<int?>((ref) => 7);
+
 /// Chart data for the Impact tab. Invalidated after each logged action.
 final impactProvider = FutureProvider<ImpactSummary>((ref) async {
   final repository = await ref.watch(actionLogRepositoryProvider.future);
-  return computeImpactSummary(repository, DateTime.now());
+  return computeImpactSummary(
+    repository,
+    DateTime.now(),
+    rangeDays: ref.watch(impactRangeProvider),
+  );
 });
 
 /// Challenges, streaks and badges. Invalidated after each logged action so

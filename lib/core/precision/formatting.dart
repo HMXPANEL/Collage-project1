@@ -10,4 +10,11 @@ abstract final class Formatting {
     final decimals = abs >= 10 ? 1 : 2;
     return '${kg.toStringAsFixed(decimals)} kg';
   }
+
+  /// Renders non-zero values too small to round to 0.01 kg as `<0.01 kg`
+  /// instead of a misleading `0.00 kg`.
+  static String tinyKg(double kg) {
+    if (kg > 0 && kg < 0.01) return '<0.01 kg';
+    return compactKg(kg);
+  }
 }

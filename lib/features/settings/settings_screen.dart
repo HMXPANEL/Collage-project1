@@ -76,30 +76,61 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         padding: const EdgeInsets.only(top: 16, bottom: 4),
         child: Text(title, style: Theme.of(context).textTheme.labelLarge),
       ),
-      Card(child: Column(children: rows)),
+      Card(
+          margin: const EdgeInsets.only(bottom: 12),
+          child: Column(children: rows)),
     ];
   }
 
-  ListTile _appearanceTile(
-      BuildContext context, AppearancePreference themePref) {
-    final current = themePref.name;
-    return ListTile(
-      leading: const Icon(Icons.brightness_6),
-      title: const Text('Theme'),
-      subtitle: Text('Currently: $current'),
-      trailing: PopupMenuButton<String>(
-        onSelected: (value) {
-          final pref = switch (value) {
-            'light' => AppearancePreference.light,
-            'dark' => AppearancePreference.dark,
-            _ => AppearancePreference.system,
-          };
-          ref.read(themePreferenceProvider.notifier).setAppearance(pref);
-        },
-        itemBuilder: (context) => const [
-          PopupMenuItem(value: 'system', child: Text('System')),
-          PopupMenuItem(value: 'light', child: Text('Light')),
-          PopupMenuItem(value: 'dark', child: Text('Dark')),
+  Widget _appearanceTile(BuildContext context, AppearancePreference themePref) {
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.brightness_6, color: scheme.primary),
+              const SizedBox(width: 12),
+              Text(
+                'Theme',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: SegmentedButton<AppearancePreference>(
+              segments: const [
+                ButtonSegment(
+                  value: AppearancePreference.system,
+                  icon: Icon(Icons.brightness_auto),
+                  label: Text('System'),
+                ),
+                ButtonSegment(
+                  value: AppearancePreference.light,
+                  icon: Icon(Icons.light_mode),
+                  label: Text('Light'),
+                ),
+                ButtonSegment(
+                  value: AppearancePreference.dark,
+                  icon: Icon(Icons.dark_mode),
+                  label: Text('Dark'),
+                ),
+              ],
+              selected: {themePref},
+              showSelectedIcon: false,
+              onSelectionChanged: (selection) {
+                ref
+                    .read(themePreferenceProvider.notifier)
+                    .setAppearance(selection.first);
+              },
+            ),
+          ),
         ],
       ),
     );

@@ -3,14 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/state/providers.dart';
+import '../../core/theme/ecoaction_theme.dart';
 import '../../core/widgets/category_icon.dart';
 import '../../core/widgets/eco_card.dart';
 import '../../core/widgets/estimate_chip.dart';
+import '../../core/widgets/ui.dart';
 import '../../core/precision/formatting.dart';
 import '../../domain/models/action_log.dart';
 import '../../domain/models/emission_factor.dart';
 
-/// Home tab: lifetime impact, current streak and today's logged actions.
+/// Home tab: lifetime impact, today's stats and logged actions.
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
@@ -26,45 +28,72 @@ class HomeScreen extends ConsumerWidget {
               onRefresh: () => ref.refresh(dashboardStatsProvider.future),
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 children: [
-                  const _RangeIntroCard(),
+                  _GreetingHeader(),
                   const SizedBox(height: 16),
+                  _HeroCard(totalKg: stats.totalKg),
+                  const SizedBox(height: 12),
                   Row(
                     children: [
                       Expanded(
-                        child: _StatCard(
-                          label: 'CO₂e avoided',
-                          value: Formatting.compactKg(stats.totalKg),
+                        child: StatCard(
                           icon: Icons.eco,
+                          label: 'CO₂e avoided',
+                          value: AnimatedNumber(
+                            value: stats.todayKg,
+                            format: Formatting.compactKg,
+                            style: _statNumberStyle(context),
+                          ),
+                          onTap: () => context.go('/impact'),
                         ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
-                        child: _StatCard(
-                          label: 'Actions',
-                          value: '${stats.totalActions}',
+                        child: StatCard(
                           icon: Icons.check_circle_outline,
+                          label: 'Actions',
+                          value: AnimatedNumber(
+                            value: stats.todayLogs.length.toDouble(),
+                            format: (v) => v.round().toString(),
+                            style: _statNumberStyle(context),
+                          ),
+                          onTap: () => context.go('/actions'),
                         ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
-                        child: _StatCard(
-                          label: 'Streak',
-                          value: '${stats.currentStreak}',
+                        child: StatCard(
                           icon: Icons.local_fire_department,
-                          iconTinted: stats.currentStreak > 0,
+                          iconColor: stats.currentStreak > 0
+                              ? EcoActionTheme.ember
+                              : null,
+                          label: 'Streak',
+                          value: AnimatedNumber(
+                            value: stats.currentStreak.toDouble(),
+                            format: (v) => v.round().toString(),
+                            style: _statNumberStyle(context),
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  _CoachCard(),
-                  const SizedBox(height: 16),
-                  Text('Today', style: Theme.of(context).textTheme.titleMedium),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
+                  const Entrance(delay: 0.1, child: _CoachCard()),
+                  SectionHeader(
+                    title: 'Today',
+                    subtitle: 'Your logged actions today',
+                  ),
                   if (stats.todayLogs.isEmpty)
-                    _EmptyToday()
+                    EmptyState(
+                      icon: Icons.eco_outlined,
+                      title: 'Nothing logged yet today.',
+                      message:
+                          'Log one small action to see it here and keep your '
+                          'streak alive.',
+                      actionLabel: 'Browse actions',
+                      onAction: () => context.go('/actions'),
+                    )
                   else
                     for (final log in stats.todayLogs)
                       Padding(
@@ -76,86 +105,96 @@ class HomeScreen extends ConsumerWidget {
             ),
     );
   }
+
+  static TextStyle? _statNumberStyle(BuildContext context) {
+    return Theme.of(
+      context,
+    ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800);
+  }
 }
 
-class _RangeIntroCard extends StatelessWidget {
-  const _RangeIntroCard();
-
+class _GreetingHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const EcoCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Your climate journey'),
-          SizedBox(height: 4),
-          Text(
-            'Log actions to see how much CO₂e you avoid and build your streak.',
-            style: TextStyle(fontSize: 13, height: 1.4),
-          ),
-        ],
-      ),
+    final scheme = Theme.of(context).colorScheme;
+    final hour = DateTime.now().hour;
+    final greeting = hour < 12
+        ? 'Good morning!'
+        : hour < 17
+            ? 'Good afternoon!'
+            : 'Good evening!';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          greeting,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          'Small steps, big impact.',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+        ),
+      ],
     );
   }
 }
 
-class _StatCard extends StatelessWidget {
-  const _StatCard({
-    required this.label,
-    required this.value,
-    required this.icon,
-    this.iconTinted = false,
-  });
+class _HeroCard extends StatelessWidget {
+  const _HeroCard({required this.totalKg});
 
-  final String label;
-  final String value;
-  final IconData icon;
-  final bool iconTinted;
+  final double totalKg;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final numberStyle = Theme.of(context).textTheme.headlineSmall;
-    final labelStyle = Theme.of(context).textTheme.labelMedium;
-    final iconColor = iconTinted ? const Color(0xFFEF6C00) : scheme.primary;
-    return EcoCard(
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: scheme.outlineVariant, width: 0.7),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [scheme.primaryContainer, scheme.surfaceContainerLow],
+        ),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 20, color: iconColor),
-          const SizedBox(height: 8),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              value,
-              style: numberStyle?.copyWith(fontWeight: FontWeight.w700),
-            ),
+          Row(
+            children: [
+              Icon(Icons.eco, color: scheme.primary),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Your climate journey',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 16),
+          AnimatedNumber(
+            value: totalKg,
+            format: Formatting.compactKg,
+            style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -1,
+                ),
+          ),
+          const SizedBox(height: 4),
           Text(
-            label,
-            style: labelStyle?.copyWith(color: scheme.onSurfaceVariant),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _EmptyToday extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return EcoCard(
-      child: Column(
-        children: [
-          const Icon(Icons.eco_outlined, size: 40),
-          const SizedBox(height: 8),
-          const Text('Nothing logged yet today.'),
-          const SizedBox(height: 12),
-          FilledButton.icon(
-            onPressed: () => context.go('/actions'),
-            icon: const Icon(Icons.add),
-            label: const Text('Browse actions'),
+            'lifetime CO₂e avoided · estimate',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                ),
           ),
         ],
       ),
@@ -168,10 +207,18 @@ class _CoachCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return EcoCard(
       child: ListTile(
-        contentPadding: EdgeInsets.zero,
-        leading: const Icon(Icons.assistant),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: scheme.primaryContainer,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(Icons.assistant, color: scheme.primary, size: 20),
+        ),
         title: const Text('Climate Coach'),
         subtitle: const Text('Offline guidance for your next step'),
         trailing: const Icon(Icons.chevron_right),
@@ -190,12 +237,53 @@ class _TodayTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return EcoCard(
-      child: ListTile(
-        contentPadding: EdgeInsets.zero,
-        leading: Icon(categoryIcon(emissionCategoryFromName(log.category)),
-            color: scheme.primary),
-        title: Text(log.actionTitle),
-        trailing: EstimateChip(estimateInKg: log.kgCo2e),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(9),
+              decoration: BoxDecoration(
+                color: scheme.primaryContainer,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                categoryIcon(emissionCategoryFromName(log.category)),
+                color: scheme.primary,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    log.actionTitle,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      Icon(Icons.check_circle, size: 14, color: scheme.primary),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Completed today',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: scheme.onSurfaceVariant,
+                            ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            EstimateChip(estimateInKg: log.kgCo2e),
+          ],
+        ),
       ),
     );
   }

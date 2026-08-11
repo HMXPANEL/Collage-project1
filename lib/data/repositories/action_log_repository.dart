@@ -69,6 +69,22 @@ class ActionLogRepository {
     };
   }
 
+  /// Earliest local day with at least one log in [start, endExclusive), or
+  /// null when the diary is empty.
+  Future<DateTime?> earliestDateBetween(
+    DateTime start,
+    DateTime endExclusive,
+  ) async {
+    final rows = await _db.rawQuery(
+      'SELECT MIN(happened_on) AS earliest FROM $_table '
+      'WHERE happened_on >= ? AND happened_on < ?',
+      [start.millisecondsSinceEpoch, endExclusive.millisecondsSinceEpoch],
+    );
+    final value = rows.first['earliest'] as int?;
+    if (value == null) return null;
+    return dateOnly(DateTime.fromMillisecondsSinceEpoch(value));
+  }
+
   /// Distinct local days with at least one log, within [start, endExclusive).
   Future<Set<DateTime>> distinctDatesBetween(
     DateTime start,

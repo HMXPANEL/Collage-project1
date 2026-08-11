@@ -103,6 +103,22 @@ class MemoryActionLogRepository implements ActionLogRepository {
   }
 
   @override
+  Future<DateTime?> earliestDateBetween(
+    DateTime start,
+    DateTime endExclusive,
+  ) async {
+    DateTime? earliest;
+    for (final l in logs) {
+      if (l.happenedOn.isBefore(start)) continue;
+      if (!l.happenedOn.isBefore(endExclusive)) continue;
+      final day =
+          DateTime(l.happenedOn.year, l.happenedOn.month, l.happenedOn.day);
+      if (earliest == null || day.isBefore(earliest)) earliest = day;
+    }
+    return earliest;
+  }
+
+  @override
   Future<Set<DateTime>> distinctDatesBetween(
     DateTime start,
     DateTime endExclusive,
