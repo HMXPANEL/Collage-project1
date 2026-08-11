@@ -38,7 +38,7 @@ class BackupPayload {
       };
 
   static BackupPayload fromJson(Map<String, Object?> json) {
-    const decoder = const _RowDecoder();
+    const decoder = _RowDecoder();
     return BackupPayload(
       version: (json['version'] as num?)?.toInt() ?? 0,
       exportedAt: json['exportedAt'] as String? ?? '',

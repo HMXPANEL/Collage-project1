@@ -115,14 +115,16 @@ class _RankTile extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: member.isYou ? scheme.primary : scheme.surfaceVariant,
+        backgroundColor:
+            member.isYou ? scheme.primary : scheme.surfaceContainerHighest,
         child: Text('#${member.rank}'),
       ),
       title: Text(member.isYou ? 'You (demo)' : member.name),
       subtitle: Text(member.college),
       trailing: Text('${member.totalKg.toStringAsFixed(1)} kg'),
       selected: member.isYou,
-      tileColor: member.isYou ? scheme.primaryContainer.withOpacity(0.3) : null,
+      tileColor:
+          member.isYou ? scheme.primaryContainer.withValues(alpha: 0.3) : null,
     );
   }
 }

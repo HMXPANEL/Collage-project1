@@ -14,7 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/app_test_harness.dart';
 
 void main() {
-  const _emptySnapshot = ChallengesSnapshot(
+  const emptySnapshot = ChallengesSnapshot(
     currentStreak: 0,
     challenges: [],
     badges: [],
@@ -61,7 +61,7 @@ void main() {
               categoryKg: {},
             ),
           ),
-          challengesProvider.overrideWith((ref) async => _emptySnapshot),
+          challengesProvider.overrideWith((ref) async => emptySnapshot),
           ...catalogOverrides(
             actions: const [
               EcoAction(

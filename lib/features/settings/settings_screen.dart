@@ -7,7 +7,7 @@ import '../../core/router.dart';
 import '../../core/state/providers.dart';
 import '../../core/prefs/app_preferences.dart';
 import '../../domain/models/user_profile.dart';
-import '../data_port.dart';
+import 'data_port.dart';
 
 /// App settings: appearance, region, daily reminder, privacy and data
 /// management (export / import / delete).
@@ -233,8 +233,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _onDataAction(_DataActionType type) async {
-    final port = await ref.read(dataPortProvider.future);
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    final port = await ref.read(dataPortProvider.future);
     switch (type) {
       case _DataActionType.export:
         final payload = await port.exportAll();

@@ -1,4 +1,3 @@
-import 'package:eco_action/data/db/app_database.dart';
 import 'package:eco_action/data/repositories/action_log_repository.dart';
 import 'package:eco_action/data/repositories/badge_repository.dart';
 import 'package:eco_action/data/repositories/challenge_progress_repository.dart';

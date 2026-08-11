@@ -109,7 +109,7 @@ class RulesCoach implements CoachService {
     return const CoachReply(
       message: 'No active streak yet. Start one today: log a single action '
           'and come back tomorrow. Small beats none.',
-      suggestions: const ['Give me a new idea', 'Show my impact'],
+      suggestions: ['Give me a new idea', 'Show my impact'],
     );
   }
 
