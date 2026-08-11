@@ -5,11 +5,13 @@ import 'package:sqflite/sqflite.dart';
 
 import '../../data/db/app_database.dart';
 import '../../data/repositories/action_log_repository.dart';
+import '../../data/repositories/badge_repository.dart';
 import '../../data/repositories/catalog_repository.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../../domain/models/eco_action.dart';
 import '../../domain/models/emission_factor.dart';
 import '../../domain/models/user_profile.dart';
+import '../../features/challenges/progress_engine.dart';
 import '../../features/home/dashboard_engine.dart';
 import '../../features/impact/impact_engine.dart';
 import '../prefs/app_preferences.dart';
@@ -113,4 +115,18 @@ final actionLogRepositoryProvider =
 final impactProvider = FutureProvider<ImpactSummary>((ref) async {
   final repository = await ref.watch(actionLogRepositoryProvider.future);
   return computeImpactSummary(repository, DateTime.now());
+});
+
+/// Challenges, streaks and badges. Invalidated after each logged action so
+/// newly-satisfied badges get awarded and progress moves.
+final challengesProvider = FutureProvider<ChallengesSnapshot>((ref) async {
+  final catalog = ref.watch(catalogRepositoryProvider);
+  final db = await ref.watch(databaseProvider.future);
+  return computeChallengesSnapshot(
+    challenges: await catalog.challenges(),
+    badges: await catalog.badges(),
+    logs: await ref.watch(actionLogRepositoryProvider.future),
+    badgeRepo: BadgeRepository(db),
+    now: DateTime.now(),
+  );
 });

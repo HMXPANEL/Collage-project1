@@ -3,6 +3,7 @@ import 'package:eco_action/core/state/providers.dart';
 import 'package:eco_action/domain/models/eco_action.dart';
 import 'package:eco_action/domain/models/emission_factor.dart';
 import 'package:eco_action/domain/models/user_profile.dart';
+import 'package:eco_action/features/challenges/progress_engine.dart';
 import 'package:eco_action/features/home/dashboard_engine.dart';
 import 'package:eco_action/features/impact/impact_engine.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/app_test_harness.dart';
 
 void main() {
+  const _emptySnapshot = ChallengesSnapshot(
+    currentStreak: 0,
+    challenges: [],
+    badges: [],
+    earnedBadgeIds: {},
+  );
+
   setUp(() {
     SharedPreferences.setMockInitialValues({});
   });
@@ -53,6 +61,7 @@ void main() {
               categoryKg: {},
             ),
           ),
+          challengesProvider.overrideWith((ref) async => _emptySnapshot),
           ...catalogOverrides(
             actions: const [
               EcoAction(
@@ -116,12 +125,8 @@ void main() {
 
     await tester.tap(tab('Challenges'));
     await tester.pumpAndSettle();
-    expect(
-      find
-          .text('Challenges, streaks and badges arrive in Phase 8.')
-          .hitTestable(),
-      findsOneWidget,
-    );
+    expect(find.text('Active challenges').hitTestable(), findsOneWidget);
+    expect(find.text('Badges').hitTestable(), findsOneWidget);
 
     await tester.tap(tab('Profile'));
     await tester.pumpAndSettle();
