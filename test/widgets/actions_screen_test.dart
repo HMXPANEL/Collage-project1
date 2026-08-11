@@ -142,6 +142,9 @@ void main() {
 
   testWidgets('logging an action records the estimate and returns to the list',
       (tester) async {
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
     final logs = MemoryActionLogRepository();
     await tester.pumpWidget(app(logs));
     await tester.pumpAndSettle();

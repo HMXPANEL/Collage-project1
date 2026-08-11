@@ -34,6 +34,9 @@ void main() {
   }
 
   testWidgets('home shows lifetime stats and today tiles', (tester) async {
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
     final stats = DashboardStats(
       totalKg: 0.89,
       totalActions: 2,
@@ -79,6 +82,9 @@ void main() {
 
   testWidgets('home shows empty state when no actions are logged',
       (tester) async {
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
     const stats = DashboardStats(
       totalKg: 0,
       totalActions: 0,

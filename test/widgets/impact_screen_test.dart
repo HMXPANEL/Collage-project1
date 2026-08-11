@@ -17,6 +17,9 @@ void main() {
 
   testWidgets('impact tab shows totals, the 7-day chart and categories',
       (tester) async {
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
     final now = DateTime.now();
     final logs = MemoryActionLogRepository();
     await logs.add(
@@ -102,6 +105,9 @@ void main() {
   });
 
   testWidgets('impact tab handles an empty diary', (tester) async {
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
     await tester.pumpWidget(
       ProviderScope(
         overrides: [

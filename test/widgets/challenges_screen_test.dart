@@ -108,6 +108,9 @@ void main() {
 
   testWidgets('challenges tab shows streaks, progress and badges',
       (tester) async {
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
     await pumpApp(tester);
     await tester.pumpAndSettle();
     await tester.tap(
