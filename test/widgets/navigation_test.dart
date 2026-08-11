@@ -4,6 +4,7 @@ import 'package:eco_action/domain/models/eco_action.dart';
 import 'package:eco_action/domain/models/emission_factor.dart';
 import 'package:eco_action/domain/models/user_profile.dart';
 import 'package:eco_action/features/home/dashboard_engine.dart';
+import 'package:eco_action/features/impact/impact_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -42,6 +43,14 @@ void main() {
               bestStreak: 0,
               todayLogs: [],
               todayKg: 0,
+            ),
+          ),
+          impactProvider.overrideWith(
+            (ref) async => const ImpactSummary(
+              totalKg: 0,
+              totalActions: 0,
+              lastSevenDaysKg: [0, 0, 0, 0, 0, 0, 0],
+              categoryKg: {},
             ),
           ),
           ...catalogOverrides(
@@ -89,7 +98,7 @@ void main() {
     await tester.tap(tab('Impact'));
     await tester.pumpAndSettle();
     expect(
-      find.text('Impact history and charts arrive in Phase 7.').hitTestable(),
+      find.text('My Impact').hitTestable(),
       findsOneWidget,
     );
     expect(

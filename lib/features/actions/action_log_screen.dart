@@ -180,6 +180,7 @@ class _ActionLogScreenState extends ConsumerState<ActionLogScreen> {
       ),
     );
     ref.invalidate(dashboardStatsProvider);
+    ref.invalidate(impactProvider);
 
     if (!mounted) return;
     final message = 'Logged ~${Formatting.compactKg(estimate.kgCo2e)} CO₂e';

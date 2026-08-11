@@ -11,6 +11,7 @@ import '../../domain/models/eco_action.dart';
 import '../../domain/models/emission_factor.dart';
 import '../../domain/models/user_profile.dart';
 import '../../features/home/dashboard_engine.dart';
+import '../../features/impact/impact_engine.dart';
 import '../prefs/app_preferences.dart';
 
 final databaseProvider = FutureProvider<Database>((ref) {
@@ -106,4 +107,10 @@ final actionLogRepositoryProvider =
     FutureProvider<ActionLogRepository>((ref) async {
   final db = await ref.watch(databaseProvider.future);
   return ActionLogRepository(db);
+});
+
+/// Chart data for the Impact tab. Invalidated after each logged action.
+final impactProvider = FutureProvider<ImpactSummary>((ref) async {
+  final repository = await ref.watch(actionLogRepositoryProvider.future);
+  return computeImpactSummary(repository, DateTime.now());
 });
