@@ -205,8 +205,7 @@ class _StreakCard extends StatelessWidget {
                     format: (v) => v.round().toString(),
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.w800,
-                          color:
-                              on ? EcoActionTheme.ember : scheme.onSurface,
+                          color: on ? EcoActionTheme.ember : scheme.onSurface,
                         ),
                   ),
                   Text(
