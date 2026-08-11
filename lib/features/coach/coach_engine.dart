@@ -146,7 +146,7 @@ class RulesCoach implements CoachService {
     }
     return CoachReply(
       message: 'You have avoided ${context.totalKg.toStringAsFixed(0)} kg '
-            'CO₂e across ${context.totalActions} actions. Keep going!',
+          'CO₂e across ${context.totalActions} actions. Keep going!',
       suggestions: const ['Review my impact', 'Suggest something new'],
     );
   }

@@ -164,7 +164,8 @@ class _ChallengeTile extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 '${done ? progress.target : progress.progress}/${progress.target}',
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                style:
+                    const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
               ),
             ],
           ),

@@ -58,8 +58,7 @@ void main() {
     expect(payload.challengeProgress.single.amount, 3);
 
     final json = DataPortService.encode(payload);
-    final roundTrip =
-        BackupPayload.fromJson(DataPortService.decode(json));
+    final roundTrip = BackupPayload.fromJson(DataPortService.decode(json));
     expect(roundTrip.logs.single.kgCo2e, 1.2);
     expect(roundTrip.badges, ['first_action']);
   });

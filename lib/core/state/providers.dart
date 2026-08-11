@@ -179,7 +179,6 @@ final coachContextProvider = FutureProvider<CoachContext>((ref) async {
     totalActions: stats.totalActions,
     currentStreak: stats.currentStreak,
     habits: profile.habits,
-    preferredActions:
-        stats.todayLogs.map((log) => log.actionTitle).toList(),
+    preferredActions: stats.todayLogs.map((log) => log.actionTitle).toList(),
   );
 });

@@ -30,10 +30,7 @@ class PrivacyScreen extends StatelessWidget {
               'All data lives in an on-device database. Uninstall the app and it is gone.'),
           _point(context, Icons.offline_bolt, 'Fully offline',
               'The app, including the climate coach, works without an internet connection.'),
-          _point(
-              context,
-              Icons.folder_copy_outlined,
-              'You stay in control',
+          _point(context, Icons.folder_copy_outlined, 'You stay in control',
               'Export a backup anytime to keep a copy of your data, and delete everything whenever you want.'),
         ],
       ),

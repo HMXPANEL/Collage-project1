@@ -45,9 +45,8 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
       _messages.add(_ChatMessage(fromUser: true, text: text));
     });
     final context = ref.read(coachContextProvider).value;
-    final reply = ref
-        .read(coachServiceProvider)
-        .reply(text, context ?? _emptyContext);
+    final reply =
+        ref.read(coachServiceProvider).reply(text, context ?? _emptyContext);
     setState(() {
       _messages.add(_ChatMessage(fromUser: false, text: reply.message));
     });

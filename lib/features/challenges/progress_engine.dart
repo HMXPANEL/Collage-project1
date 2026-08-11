@@ -90,8 +90,7 @@ List<String> badgesToAward(
   for (final badge in badges) {
     if (alreadyEarned.contains(badge.id)) continue;
     final satisfied = switch (badge.condition.type) {
-      BadgeConditionType.countTotal =>
-        totalActions >= badge.condition.value,
+      BadgeConditionType.countTotal => totalActions >= badge.condition.value,
       BadgeConditionType.bestStreak => bestStreak >= badge.condition.value,
       BadgeConditionType.challengeCompleted =>
         challengesCompleted >= badge.condition.value,

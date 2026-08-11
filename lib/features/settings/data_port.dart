@@ -46,9 +46,8 @@ class BackupPayload {
           ? null
           : UserProfile.fromRow(
               (json['profile'] as Map).cast<String, Object?>()),
-      logs: ((json['logs'] as List?) ?? const [])
-          .map(decoder.actionLog)
-          .toList(),
+      logs:
+          ((json['logs'] as List?) ?? const []).map(decoder.actionLog).toList(),
       badges: ((json['badges'] as List?) ?? const []).cast<String>(),
       challengeProgress: ((json['challengeProgress'] as List?) ?? const [])
           .map(decoder.challengeProgress)
@@ -78,7 +77,7 @@ class DataPortService {
   final BadgeRepository _badges;
   final ChallengeProgressRepository _challengeProgress;
 
-Future<BackupPayload> exportAll() async {
+  Future<BackupPayload> exportAll() async {
     // Serialize the whole diary using a far-future end bound.
     final end = DateTime.fromMillisecondsSinceEpoch(0x7fffffffffffffff);
     return BackupPayload(

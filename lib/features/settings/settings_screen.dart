@@ -33,8 +33,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                _section(context, 'Appearance',
-                    _appearanceTile(context, themePref)),
+                _section(
+                    context, 'Appearance', _appearanceTile(context, themePref)),
                 _section(context, 'Personalization', [
                   _regionTile(profile),
                   _reminderTile(profile),
@@ -59,10 +59,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     onTap: () => context.pushNamed(AppRoutes.methodology),
                   ),
                 ]),
-                _section(context, 'Data management',
-                    _dataTiles(context)),
+                _section(context, 'Data management', _dataTiles(context)),
               ],
             ),
+    );
   }
 
   List<Widget> _section(BuildContext context, String title, List<Widget> rows) {
@@ -157,9 +157,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _toggleReminder(UserProfile profile, TimeOfDay? time) async {
-    final minutes = time == null
-        ? null
-        : time.hour * 60 + time.minute;
+    final minutes = time == null ? null : time.hour * 60 + time.minute;
     final updated = UserProfile(
       region: profile.region,
       transportBaseline: profile.transportBaseline,
@@ -255,8 +253,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ref.invalidate(challengesProvider);
           ref.invalidate(impactProvider);
           setState(() => _importError = null);
-          messenger.showSnackBar(
-              const SnackBar(content: Text('Backup restored.')));
+          messenger
+              .showSnackBar(const SnackBar(content: Text('Backup restored.')));
         } on FormatException {
           setState(() => _importError = 'Invalid backup JSON.');
         } catch (e) {
