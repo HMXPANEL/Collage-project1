@@ -1,4 +1,5 @@
 import 'package:eco_action/app.dart';
+import 'package:eco_action/core/state/providers.dart';
 import 'package:eco_action/domain/models/eco_action.dart';
 import 'package:eco_action/domain/models/emission_factor.dart';
 import 'package:eco_action/domain/models/user_profile.dart';
