@@ -27,6 +27,7 @@ void main() {
       sourceName: 'test',
       sourceReference: 'test',
       notes: 'test',
+      status: FactorStatus.verified,
       kind: EmissionFactorKind.avoidance,
     ),
     'petrol_car_km': EmissionFactor(
