@@ -19,3 +19,5 @@ android/key.properties
 # OS
 .DS_Store
 Thumbs.db
+# IDE trash (Android Studio)
+.trashed-*
