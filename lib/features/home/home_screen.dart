@@ -24,7 +24,7 @@ class HomeScreen extends ConsumerWidget {
       body: stats == null
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
-              onRefresh: () => ref.refresh(dashboardStatsProvider.future),
+              onRefresh: () => ref.refresh(dashboardStatsProvider),
               child: CustomScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [

@@ -196,51 +196,63 @@ void main() {
 
   testWidgets('pulling down at the top refreshes the dashboard stats',
       (tester) async {
-    tester.view.physicalSize = const Size(800, 1600);
-    tester.view.devicePixelRatio = 1.0;
-    addTearDown(tester.view.reset);
+    try {
+      tester.view.physicalSize = const Size(800, 1600);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
 
-    var calls = 0;
-    DashboardStats stats() => DashboardStats(
-          totalKg: calls * 10.0,
-          totalActions: 0,
-          currentStreak: 0,
-          bestStreak: 0,
-          todayLogs: [],
-          todayKg: 0,
-        );
+      var calls = 0;
+      DashboardStats stats() => DashboardStats(
+            totalKg: calls * 10.0,
+            totalActions: 0,
+            currentStreak: 0,
+            bestStreak: 0,
+            todayLogs: [],
+            todayKg: 0,
+          );
 
-    await tester.pumpWidget(ProviderScope(
-      overrides: [
-        ...profileOverrides(
-          MemoryProfileRepository(
-            profile: const UserProfile(
-              region: 'in',
-              transportBaseline: 'scooter',
-              onboarded: true,
+      await tester.pumpWidget(ProviderScope(
+        overrides: [
+          ...profileOverrides(
+            MemoryProfileRepository(
+              profile: const UserProfile(
+                region: 'in',
+                transportBaseline: 'scooter',
+                onboarded: true,
+              ),
             ),
           ),
-        ),
-        dashboardStatsProvider.overrideWith((ref) async {
-          calls++;
-          return stats();
-        }),
-      ],
-      child: const EcoActionApp(),
-    ));
-    await tester.pumpAndSettle();
+          dashboardStatsProvider.overrideWith((ref) async {
+            calls++;
+            return stats();
+          }),
+        ],
+        child: const EcoActionApp(),
+      ));
+      await tester.pumpAndSettle();
 
-    expect(calls, 1);
-    expect(find.text('10.0 kg'), findsWidgets);
+      expect(calls, 1);
+      expect(find.text('10.0 kg'), findsWidgets);
 
-    final before = calls;
-    final indicator = tester.state<RefreshIndicatorState>(
-      find.byType(RefreshIndicator),
-    );
-    await indicator.show();
-    await tester.pumpAndSettle();
+      final before = calls;
+      final indicator = tester.state<RefreshIndicatorState>(
+        find.byType(RefreshIndicator),
+      );
+      await indicator.show();
+      await tester.pumpAndSettle();
 
-    expect(calls, greaterThan(before));
-    expect(find.text('20.0 kg'), findsWidgets);
+      expect(calls, greaterThan(before));
+      expect(find.text('20.0 kg'), findsWidgets);
+    } catch (e, st) {
+      // ignore: avoid_print
+      print('REFRESH FAIL calls=$calls before=$before');
+      // ignore: avoid_print
+      print(
+        'REFRESH TEXTS: ${tester.widgetList<Text>(find.byType(Text)).map((t) => t.data).whereType<String>().toList()}',
+      );
+      // ignore: avoid_print
+      print('REFRESH EXC: $e\n$st');
+      rethrow;
+    }
   });
 }
