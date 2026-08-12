@@ -201,7 +201,7 @@ class _Suggestions extends StatelessWidget {
 }
 
 class _AnimatedMessage extends StatefulWidget {
-  const _AnimatedMessage({super.key, required this.message});
+  const _AnimatedMessage({required this.message});
 
   final _ChatMessage message;
 

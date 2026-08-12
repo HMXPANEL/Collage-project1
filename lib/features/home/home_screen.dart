@@ -30,7 +30,7 @@ class HomeScreen extends ConsumerWidget {
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 children: [
-                  const Entrance(child: _GreetingHeader()),
+                  Entrance(child: _GreetingHeader()),
                   const SizedBox(height: 16),
                   Entrance(
                     delay: 0.06,
