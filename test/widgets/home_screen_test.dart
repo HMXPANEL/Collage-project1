@@ -235,10 +235,10 @@ void main() {
       expect(find.text('10.0 kg'), findsWidgets);
 
       final before = calls;
-      final indicator = tester.state<RefreshIndicatorState>(
+      final refresh = tester.widget<RefreshIndicator>(
         find.byType(RefreshIndicator),
       );
-      await indicator.show();
+      await refresh.onRefresh!();
       await tester.pumpAndSettle();
 
       expect(calls, greaterThan(before));

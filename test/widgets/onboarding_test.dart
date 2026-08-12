@@ -29,6 +29,10 @@ void main() {
   testWidgets('onboarding flow collects answers, saves profile, lands on home',
       (tester) async {
     try {
+      tester.view.physicalSize = const Size(800, 1600);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+
       final repository = MemoryProfileRepository();
       await tester.pumpWidget(
         ProviderScope(
@@ -104,6 +108,10 @@ void main() {
       'onboarding shows the hero art and real selections on the '
       'final screen, and back transitions work', (tester) async {
     try {
+      tester.view.physicalSize = const Size(800, 1600);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+
       final repository = MemoryProfileRepository();
       await tester.pumpWidget(
         ProviderScope(
