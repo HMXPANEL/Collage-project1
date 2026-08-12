@@ -193,4 +193,58 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.text('Your climate journey'), findsOneWidget);
   });
+
+  testWidgets('pulling down at the top refreshes the dashboard stats',
+      (tester) async {
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    var calls = 0;
+    DashboardStats stats() => DashboardStats(
+          totalKg: calls * 10.0,
+          totalActions: 0,
+          currentStreak: 0,
+          bestStreak: 0,
+          todayLogs: [],
+          todayKg: 0,
+        );
+
+    await tester.pumpWidget(ProviderScope(
+      overrides: [
+        ...profileOverrides(
+          MemoryProfileRepository(
+            profile: const UserProfile(
+              region: 'in',
+              transportBaseline: 'scooter',
+              onboarded: true,
+            ),
+          ),
+        ),
+        dashboardStatsProvider.overrideWith((ref) async {
+          calls++;
+          return stats();
+        }),
+      ],
+      child: const EcoActionApp(),
+    ));
+    await tester.pumpAndSettle();
+
+    expect(calls, 1);
+    expect(find.text('10.0 kg'), findsWidgets);
+
+    final before = calls;
+    await tester.fling(
+      find.byType(CustomScrollView),
+      const Offset(0, 300),
+      1000,
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byType(RefreshProgressIndicator), findsOneWidget);
+    await tester.pumpAndSettle();
+
+    expect(calls, greaterThan(before));
+    expect(find.text('20.0 kg'), findsWidgets);
+  });
 }

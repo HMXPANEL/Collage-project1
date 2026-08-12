@@ -28,8 +28,8 @@ class HomeScreen extends ConsumerWidget {
               child: CustomScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [
-                  EcoAppBar.large(
-                    background: _HeroHeader(totalKg: stats.totalKg),
+                  SliverToBoxAdapter(
+                    child: _HeroHeader(totalKg: stats.totalKg),
                   ),
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),

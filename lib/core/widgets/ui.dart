@@ -303,44 +303,18 @@ class EmptyState extends StatelessWidget {
 ///
 /// [EcoAppBar.medium] — pinned medium bar with the standard title (weight
 /// 600, left-aligned). Use for every titled screen.
-///
-/// [EcoAppBar.large] — collapsing header for hero screens. The [background]
-/// is painted full-bleed and scrolls away ([SliverAppBar] `pinned: false`);
-/// the bar itself stays empty and transparent.
 class EcoAppBar extends StatelessWidget {
   const EcoAppBar.medium({
     super.key,
     required this.title,
     this.actions = const [],
-  })  : background = null,
-        expandedHeight = 300;
+  });
 
-  const EcoAppBar.large({
-    super.key,
-    required this.background,
-    this.expandedHeight = 300,
-  })  : title = null,
-        actions = const [];
-
-  /// Title used by [EcoAppBar.medium]. Null for the large header variant.
-  final String? title;
+  final String title;
   final List<Widget> actions;
-
-  /// Full-bleed header content for [EcoAppBar.large].
-  final Widget? background;
-  final double expandedHeight;
 
   @override
   Widget build(BuildContext context) {
-    if (background != null) {
-      return SliverAppBar(
-        pinned: false,
-        expandedHeight: expandedHeight,
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-        flexibleSpace: FlexibleSpaceBar(background: background),
-      );
-    }
     final scheme = Theme.of(context).colorScheme;
     return SliverAppBar.medium(
       pinned: true,
@@ -351,7 +325,7 @@ class EcoAppBar extends StatelessWidget {
       titleTextStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
           ),
-      title: Text(title!),
+      title: Text(title),
     );
   }
 }
