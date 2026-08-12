@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../motion/eco_motion.dart';
+
 /// Reusable design-system components shared across feature screens.
 ///
 /// Style comes from [ThemeData]; these widgets only handle layout and
@@ -107,14 +109,15 @@ class SectionHeader extends StatelessWidget {
   }
 }
 
-/// Counts up from the previous value whenever [value] changes.
-class AnimatedNumber extends StatelessWidget {
+/// Counts toward [value] from the previous shown value, so data changes
+/// animate instead of snapping. First build counts up from zero.
+class AnimatedNumber extends StatefulWidget {
   const AnimatedNumber({
     super.key,
     required this.value,
     required this.format,
     this.style,
-    this.duration = const Duration(milliseconds: 600),
+    this.duration = EcoMotion.slow,
   });
 
   final double value;
@@ -123,18 +126,38 @@ class AnimatedNumber extends StatelessWidget {
   final Duration duration;
 
   @override
+  State<AnimatedNumber> createState() => _AnimatedNumberState();
+}
+
+class _AnimatedNumberState extends State<AnimatedNumber> {
+  double _shown = 0;
+
+  @override
+  void didUpdateWidget(AnimatedNumber oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) {
+      _shown = oldWidget.value;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (EcoMotion.reduced(context)) {
+      return Text(widget.format(widget.value), style: widget.style);
+    }
     return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0, end: value),
-      duration: duration,
-      curve: Curves.easeOutCubic,
-      builder: (context, v, _) => Text(format(v), style: style),
+      tween: Tween(begin: _shown, end: widget.value),
+      duration: widget.duration,
+      curve: EcoMotion.state,
+      builder: (context, value, _) =>
+          Text(widget.format(value), style: widget.style),
     );
   }
 }
 
-/// Smoothly fills from the previous fraction whenever [value] changes.
-class AnimatedProgressBar extends StatelessWidget {
+/// Smoothly fills toward [value] from the previous fraction, so progress
+/// grows instead of snapping. First build animates from zero.
+class AnimatedProgressBar extends StatefulWidget {
   const AnimatedProgressBar({
     super.key,
     required this.value,
@@ -149,21 +172,40 @@ class AnimatedProgressBar extends StatelessWidget {
   final Color? backgroundColor;
 
   @override
+  State<AnimatedProgressBar> createState() => _AnimatedProgressBarState();
+}
+
+class _AnimatedProgressBarState extends State<AnimatedProgressBar> {
+  double _shown = 0;
+
+  @override
+  void didUpdateWidget(AnimatedProgressBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) {
+      _shown = oldWidget.value.clamp(0.0, 1.0);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final target = widget.value.clamp(0.0, 1.0);
+    Widget bar(double fraction) => ClipRRect(
+          borderRadius: BorderRadius.circular(widget.height),
+          child: LinearProgressIndicator(
+            value: fraction,
+            minHeight: widget.height,
+            color: widget.color ?? scheme.primary,
+            backgroundColor:
+                widget.backgroundColor ?? scheme.surfaceContainerHighest,
+          ),
+        );
+    if (EcoMotion.reduced(context)) return bar(target);
     return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0, end: value.clamp(0.0, 1.0)),
-      duration: const Duration(milliseconds: 700),
-      curve: Curves.easeOutCubic,
-      builder: (context, v, _) => ClipRRect(
-        borderRadius: BorderRadius.circular(height),
-        child: LinearProgressIndicator(
-          value: v,
-          minHeight: height,
-          color: color ?? scheme.primary,
-          backgroundColor: backgroundColor ?? scheme.surfaceContainerHighest,
-        ),
-      ),
+      tween: Tween(begin: _shown, end: target),
+      duration: EcoMotion.slow,
+      curve: EcoMotion.state,
+      builder: (context, value, _) => bar(value),
     );
   }
 }
@@ -273,10 +315,11 @@ class Entrance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (EcoMotion.reduced(context)) return child;
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
-      duration: const Duration(milliseconds: 450),
-      curve: Interval(delay.clamp(0.0, 0.8), 1.0, curve: Curves.easeOutCubic),
+      duration: EcoMotion.entrance,
+      curve: Interval(delay.clamp(0.0, 0.8), 1.0, curve: EcoMotion.enter),
       builder: (context, t, child) => Opacity(
         opacity: t,
         child: Transform.translate(

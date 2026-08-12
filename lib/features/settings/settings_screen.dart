@@ -248,8 +248,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return [
       for (final action in actions)
         ListTile(
-          leading: Icon(action.icon),
-          title: Text(action.label),
+          leading: Icon(
+            action.icon,
+            color: action.type == _DataActionType.delete
+                ? Theme.of(context).colorScheme.error
+                : null,
+          ),
+          title: Text(
+            action.label,
+            style: action.type == _DataActionType.delete
+                ? TextStyle(color: Theme.of(context).colorScheme.error)
+                : null,
+          ),
           onTap: () => _onDataAction(action.type),
         ),
       if (_importError != null)

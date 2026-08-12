@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/state/providers.dart';
+import '../../core/theme/ecoaction_theme.dart';
+import '../../core/widgets/eco_card.dart';
+import '../../core/widgets/ui.dart';
 import 'community_engine.dart';
 
+/// Demo community leaderboard. Ranks the user against seeded peers, clearly
+/// labelled so nobody mistakes it for a live college board.
 class CommunityScreen extends ConsumerWidget {
   const CommunityScreen({super.key});
 
@@ -15,28 +20,41 @@ class CommunityScreen extends ConsumerWidget {
       body: snapshot.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, _) => Center(child: Text('Could not load: $err')),
-        data: (snapshot) {
-          final you = snapshot.currentUser;
+        data: (data) {
+          final you = data.currentUser;
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
             children: [
-              const _DemoNotice(),
-              const SizedBox(height: 16),
-              _CollegeCard(collegeTotalKg: snapshot.collegeTotalKg),
-              const SizedBox(height: 16),
-              if (you != null)
-                _YourRankCard(you: you)
-              else
-                const Center(
-                  child: Text('Log your first action to join the board'),
-                ),
-              const SizedBox(height: 16),
-              Text(
-                'Leaderboard',
-                style: Theme.of(context).textTheme.titleMedium,
+              const Entrance(child: _DemoNotice()),
+              const SizedBox(height: 12),
+              Entrance(
+                delay: 0.06,
+                child: _CampusCard(collegeTotalKg: data.collegeTotalKg),
               ),
-              const SizedBox(height: 8),
-              for (final member in snapshot.members) _RankTile(member: member),
+              const SizedBox(height: 12),
+              if (you != null)
+                Entrance(delay: 0.12, child: _YourRankCard(you: you))
+              else
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24),
+                  child: Center(
+                    child: Text('Log your first action to join the board'),
+                  ),
+                ),
+              SectionHeader(
+                title: 'Leaderboard',
+                subtitle: data.isDemo
+                    ? 'Demo peers — not real people'
+                    : 'Ranked by CO₂e avoided',
+              ),
+              for (var i = 0; i < data.members.length; i++)
+                Entrance(
+                  delay: 0.15 + (i * 0.04),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: _RankTile(member: data.members[i]),
+                  ),
+                ),
             ],
           );
         },
@@ -52,33 +70,100 @@ class _DemoNotice extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: scheme.secondaryContainer,
-        borderRadius: BorderRadius.circular(12),
+        color: scheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(14),
       ),
-      child: Text(
-        'Demo data — peers shown are sample profiles, not real people. '
-        'This simulates how a college leaderboard will work once live servers connect.',
-        style: TextStyle(color: scheme.onSecondaryContainer),
+      child: Row(
+        children: [
+          Icon(Icons.science_outlined, size: 18, color: scheme.primary),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              'Demo data — peers shown are sample profiles, not real people. '
+              'This simulates a college leaderboard for a future live server.',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _CollegeCard extends StatelessWidget {
-  const _CollegeCard({required this.collegeTotalKg});
+class _CampusCard extends StatelessWidget {
+  const _CampusCard({required this.collegeTotalKg});
 
   final double collegeTotalKg;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: const Icon(Icons.school),
-        title: const Text('Your demo college'),
-        subtitle: Text(
-            '${collegeTotalKg.toStringAsFixed(1)} kg of CO₂e avoided together on this demo board'),
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: scheme.outlineVariant, width: 0.7),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [scheme.primaryContainer, scheme.surfaceContainerLow],
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: scheme.surface.withValues(alpha: 0.4),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.school, color: scheme.primary, size: 24),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Community impact',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Your demo college · all members',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                ),
+              ],
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              AnimatedNumber(
+                value: collegeTotalKg,
+                format: (v) => '${v.toStringAsFixed(1)} kg',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: scheme.onSurface,
+                    ),
+              ),
+              Text(
+                'CO₂e avoided',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -91,15 +176,69 @@ class _YourRankCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).colorScheme.primaryContainer,
-      child: ListTile(
-        leading: CircleAvatar(
-          child: Text('#${you.rank}'),
-        ),
-        title: const Text('You'),
-        subtitle: Text(
-            '${you.totalKg.toStringAsFixed(1)} kg avoided · ${you.totalActions} actions'),
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: scheme.primaryContainer,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 26,
+            backgroundColor: scheme.primary,
+            child: Text(
+              'Y',
+              style: TextStyle(
+                color: scheme.onPrimary,
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'You',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: scheme.onPrimaryContainer,
+                      ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '#${you.rank} on this demo board',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: scheme.onPrimaryContainer.withValues(alpha: 0.8),
+                      ),
+                ),
+              ],
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              AnimatedNumber(
+                value: you.totalKg,
+                format: (v) => '${v.toStringAsFixed(1)} kg',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: scheme.onPrimaryContainer,
+                    ),
+              ),
+              Text(
+                '${you.totalActions} actions',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: scheme.onPrimaryContainer.withValues(alpha: 0.8),
+                    ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -113,18 +252,71 @@ class _RankTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor:
-            member.isYou ? scheme.primary : scheme.surfaceContainerHighest,
-        child: Text('#${member.rank}'),
+    final isYou = member.isYou;
+    return EcoCard(
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+        leading: _rankBadge(scheme),
+        title: Text(
+          isYou ? 'You (demo)' : member.name,
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+        ),
+        subtitle: Text(
+          isYou ? 'Your position on this board' : member.college,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            AnimatedNumber(
+              value: member.totalKg,
+              format: (v) => '${v.toStringAsFixed(1)} kg',
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
+            Text(
+              '${member.totalActions} actions',
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+            ),
+          ],
+        ),
+        tileColor:
+            isYou ? scheme.primaryContainer.withValues(alpha: 0.3) : null,
       ),
-      title: Text(member.isYou ? 'You (demo)' : member.name),
-      subtitle: Text(member.college),
-      trailing: Text('${member.totalKg.toStringAsFixed(1)} kg'),
-      selected: member.isYou,
-      tileColor:
-          member.isYou ? scheme.primaryContainer.withValues(alpha: 0.3) : null,
+    );
+  }
+
+  Widget _rankBadge(ColorScheme scheme) {
+    final rank = member.rank;
+    final Widget child;
+    final Color? background;
+    final Color? foreground;
+    if (rank == 1) {
+      child = const Icon(Icons.emoji_events, size: 18);
+      background = EcoActionTheme.ember;
+      foreground = const Color(0xFF3B2700);
+    } else {
+      child =
+          Text('$rank', style: const TextStyle(fontWeight: FontWeight.w800));
+      background = scheme.surfaceContainerHighest;
+      foreground = scheme.onSurfaceVariant;
+    }
+    return CircleAvatar(
+      radius: 18,
+      backgroundColor: member.isYou ? scheme.primary : background,
+      child: IconTheme(
+        data: IconThemeData(
+          color: member.isYou ? scheme.onPrimary : foreground,
+          size: 18,
+        ),
+        child: child,
+      ),
     );
   }
 }

@@ -30,53 +30,59 @@ class HomeScreen extends ConsumerWidget {
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 children: [
-                  _GreetingHeader(),
+                  const Entrance(child: _GreetingHeader()),
                   const SizedBox(height: 16),
-                  _HeroCard(totalKg: stats.totalKg),
+                  Entrance(
+                    delay: 0.06,
+                    child: _HeroCard(totalKg: stats.totalKg),
+                  ),
                   const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: StatCard(
-                          icon: Icons.eco,
-                          label: 'CO₂e avoided',
-                          value: AnimatedNumber(
-                            value: stats.todayKg,
-                            format: Formatting.compactKg,
-                            style: _statNumberStyle(context),
-                          ),
-                          onTap: () => context.go('/impact'),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: StatCard(
-                          icon: Icons.check_circle_outline,
-                          label: 'Actions',
-                          value: AnimatedNumber(
-                            value: stats.todayLogs.length.toDouble(),
-                            format: (v) => v.round().toString(),
-                            style: _statNumberStyle(context),
-                          ),
-                          onTap: () => context.go('/actions'),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: StatCard(
-                          icon: Icons.local_fire_department,
-                          iconColor: stats.currentStreak > 0
-                              ? EcoActionTheme.ember
-                              : null,
-                          label: 'Streak',
-                          value: AnimatedNumber(
-                            value: stats.currentStreak.toDouble(),
-                            format: (v) => v.round().toString(),
-                            style: _statNumberStyle(context),
+                  Entrance(
+                    delay: 0.12,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: StatCard(
+                            icon: Icons.eco,
+                            label: 'CO₂e avoided',
+                            value: AnimatedNumber(
+                              value: stats.todayKg,
+                              format: Formatting.compactKg,
+                              style: _statNumberStyle(context),
+                            ),
+                            onTap: () => context.go('/impact'),
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: StatCard(
+                            icon: Icons.check_circle_outline,
+                            label: 'Actions',
+                            value: AnimatedNumber(
+                              value: stats.todayLogs.length.toDouble(),
+                              format: (v) => v.round().toString(),
+                              style: _statNumberStyle(context),
+                            ),
+                            onTap: () => context.go('/actions'),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: StatCard(
+                            icon: Icons.local_fire_department,
+                            iconColor: stats.currentStreak > 0
+                                ? EcoActionTheme.ember
+                                : null,
+                            label: 'Streak',
+                            value: AnimatedNumber(
+                              value: stats.currentStreak.toDouble(),
+                              format: (v) => v.round().toString(),
+                              style: _statNumberStyle(context),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 12),
                   const Entrance(delay: 0.1, child: _CoachCard()),
