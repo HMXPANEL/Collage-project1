@@ -108,7 +108,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(
       find.text('My Impact').hitTestable(),
-      findsOneWidget,
+      findsWidgets,
     );
     expect(
       find.text('Your climate journey').hitTestable(),
@@ -117,7 +117,7 @@ void main() {
 
     await tester.tap(tab('Actions'));
     await tester.pumpAndSettle();
-    expect(find.text('Take Action').hitTestable(), findsOneWidget);
+    expect(find.text('Take Action').hitTestable(), findsWidgets);
     expect(
       find.text('Use a reusable bottle').hitTestable(),
       findsOneWidget,

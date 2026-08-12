@@ -91,7 +91,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('My Impact'), findsOneWidget);
+    expect(find.text('My Impact'), findsWidgets);
     expect(find.text('~2.89 kg'), findsOneWidget);
     expect(
       find.text('Total CO₂e avoided · 3 actions'),

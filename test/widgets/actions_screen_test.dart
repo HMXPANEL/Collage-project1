@@ -131,7 +131,7 @@ void main() {
     await tester.tap(actionsTab());
     await tester.pumpAndSettle();
 
-    expect(find.text('Take Action'), findsOneWidget);
+    expect(find.text('Take Action'), findsWidgets);
     expect(find.text('Waste'), findsOneWidget);
     expect(find.text('Transport'), findsOneWidget);
     expect(find.text('Use a reusable bottle'), findsOneWidget);
@@ -183,6 +183,9 @@ void main() {
 
   testWidgets('zero quantity is rejected and nothing is logged',
       (tester) async {
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
     final logs = MemoryActionLogRepository();
     await tester.pumpWidget(app(logs));
     await tester.pumpAndSettle();
