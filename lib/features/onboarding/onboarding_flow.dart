@@ -23,7 +23,6 @@ const Color _deepTop = Color(0xFF0A2B1A);
 const Color _deepBottom = Color(0xFF1B6B40);
 
 /// Bright leaf palette that stays readable on the dark brand background.
-const Color _heroLeaf = Color(0xFF8FE3B2);
 const Color _welcomeInk = Color(0xFFF1FBF4);
 const Color _welcomeMuted = Color(0xFFC3E6CF);
 
