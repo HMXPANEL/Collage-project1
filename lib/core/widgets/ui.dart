@@ -312,13 +312,15 @@ class EcoAppBar extends StatelessWidget {
     super.key,
     required this.title,
     this.actions = const [],
-  });
+  })  : background = null,
+        expandedHeight = 300;
 
   const EcoAppBar.large({
     super.key,
     required this.background,
     this.expandedHeight = 300,
-  });
+  })  : title = null,
+        actions = const [];
 
   /// Title used by [EcoAppBar.medium]. Null for the large header variant.
   final String? title;
