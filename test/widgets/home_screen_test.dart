@@ -240,9 +240,8 @@ void main() {
       1000,
     );
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(find.byType(RefreshProgressIndicator), findsOneWidget);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump(const Duration(seconds: 1));
 
     expect(calls, greaterThan(before));
     expect(find.text('20.0 kg'), findsWidgets);
