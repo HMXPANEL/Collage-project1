@@ -41,14 +41,6 @@ void main() {
     await tester.tap(find.text('Get Started'));
     await tester.pumpAndSettle();
 
-    final diagTexts = tester
-        .widgetList<Text>(find.byType(Text))
-        .map((t) => t.data)
-        .whereType<String>()
-        .toList();
-    // ignore: avoid_print
-    print('ONBOARD_TEXTS_AFTER_TAP: $diagTexts');
-
     expect(find.text('How do you usually travel?'), findsOneWidget);
     await tester.tap(find.text('Scooter'));
     await tester.pumpAndSettle();

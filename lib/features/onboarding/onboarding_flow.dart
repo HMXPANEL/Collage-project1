@@ -47,43 +47,42 @@ class OnboardingFlow extends ConsumerStatefulWidget {
 
 class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
   final _commuteController = TextEditingController();
-  final _pageController = PageController();
   final Set<EmissionCategory> _interests = {};
   final Map<String, bool> _habits = {
     for (final habit in onboardingHabits) habit.id: false,
   };
   int _step = 0;
+  int _direction = 1;
   String? _transportBaseline;
   bool _saving = false;
 
   @override
   void dispose() {
     _commuteController.dispose();
-    _pageController.dispose();
     super.dispose();
   }
 
   static const int _questionCount = 4;
   static const int _completionStep = _questionCount;
 
-  void _goTo(int step) {
-    _pageController.animateToPage(
-      step,
-      duration: const Duration(milliseconds: 260),
-      curve: Curves.easeOutCubic,
-    );
-  }
-
   void _advance() {
     if (_step < _completionStep) {
-      _goTo(_step + 1);
+      setState(() {
+        _direction = 1;
+        _step++;
+      });
     } else {
       _finish();
     }
   }
 
   void _back() {
-    if (_step > 0 && !_saving) _goTo(_step - 1);
+    if (_step > 0 && !_saving) {
+      setState(() {
+        _direction = -1;
+        _step--;
+      });
+    }
   }
 
   String get _travelLabel {
@@ -123,6 +122,131 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
 
   bool get _immersive => _step == 0 || _step == _completionStep;
 
+  Widget _page() {
+    return switch (_step) {
+      0 => const _WelcomePage(key: ValueKey('welcome')),
+      1 => _stepPage(
+          key: const ValueKey('transport'),
+          heroFraction: 0.34,
+          children: _transportChildren(),
+        ),
+      2 => _stepPage(
+          key: const ValueKey('interests'),
+          heroFraction: 0.34,
+          children: _interestsChildren(),
+        ),
+      3 => _stepPage(
+          key: const ValueKey('habits'),
+          heroFraction: 0.3,
+          children: _habitsChildren(),
+        ),
+      _ => _DonePage(
+          key: const ValueKey('done'),
+          travelLabel: _travelLabel,
+          interestsText: _interestsText,
+          habitsText: _habitsText,
+        ),
+    };
+  }
+
+  List<Widget> _transportChildren() => [
+        _pageHeading(
+          'How do you usually travel?',
+          'Pick the option that sounds most like you.',
+        ),
+        const SizedBox(height: 16),
+        Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children: [
+            for (final option in _transportOptions)
+              _OptionCard(
+                label: option.label,
+                icon: option.icon,
+                selected: _transportBaseline == option.value,
+                onTap: () {
+                  setState(() {
+                    _transportBaseline = _transportBaseline == option.value
+                        ? null
+                        : option.value;
+                  });
+                },
+              ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        _pageHeading(
+          'Daily distance to college or work',
+          'Optional — used to size your travel impact.',
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: _commuteController,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            hintText: 'e.g. 6',
+            prefixIcon: Icon(Icons.straighten),
+            suffixText: 'km',
+          ),
+        ),
+      ];
+
+  List<Widget> _interestsChildren() => [
+        _pageHeading(
+          'What interests you most?',
+          'Choose one or more. Your coach will lean into these.',
+        ),
+        const SizedBox(height: 16),
+        Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children: [
+            for (final category in EmissionCategory.values)
+              _OptionCard(
+                label: category.label,
+                icon: categoryIcon(category),
+                selected: _interests.contains(category),
+                onTap: () {
+                  setState(() {
+                    if (_interests.contains(category)) {
+                      _interests.remove(category);
+                    } else {
+                      _interests.add(category);
+                    }
+                  });
+                },
+              ),
+          ],
+        ),
+      ];
+
+  List<Widget> _habitsChildren() => [
+        _pageHeading(
+          'Which habits sound like you?',
+          'Turn on the ones you already keep.',
+        ),
+        const SizedBox(height: 12),
+        for (final habit in onboardingHabits) ...[
+          SwitchListTile(
+            title: Text(habit.label),
+            value: _habits[habit.id]!,
+            onChanged: (value) {
+              setState(() => _habits[habit.id] = value);
+            },
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(
+                  color: Theme.of(context).colorScheme.outlineVariant),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 2,
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+      ];
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
@@ -158,126 +282,32 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
                 if (_step >= 1 && _step <= _completionStep)
                   _StepProgress(total: _questionCount, current: _step),
                 Expanded(
-                  child: PageView(
-                    controller: _pageController,
-                    physics: const NeverScrollableScrollPhysics(),
-                    onPageChanged: (index) => setState(() => _step = index),
-                    children: [
-                      const _WelcomePage(key: ValueKey('welcome')),
-                      _stepPage(
-                        key: const ValueKey('transport'),
-                        heroFraction: 0.34,
-                        children: [
-                          _pageHeading(
-                            'How do you usually travel?',
-                            'Pick the option that sounds most like you.',
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 260),
+                    transitionBuilder: (child, animation) {
+                      final enter = Tween<Offset>(
+                        begin: Offset(0.18 * _direction, 0),
+                        end: Offset.zero,
+                      ).animate(animation);
+                      return FadeTransition(
+                        opacity: animation,
+                        child: SlideTransition(position: enter, child: child),
+                      );
+                    },
+                    layoutBuilder: (context, current, previous) => Stack(
+                      children: [
+                        if (previous != null)
+                          SlideTransition(
+                            position: Tween<Offset>(
+                              begin: Offset.zero,
+                              end: Offset(-0.18 * _direction, 0),
+                            ).animate(animation),
+                            child: previous,
                           ),
-                          const SizedBox(height: 16),
-                          Wrap(
-                            spacing: 10,
-                            runSpacing: 10,
-                            children: [
-                              for (final option in _transportOptions)
-                                _OptionCard(
-                                  label: option.label,
-                                  icon: option.icon,
-                                  selected: _transportBaseline == option.value,
-                                  onTap: () {
-                                    setState(() {
-                                      _transportBaseline =
-                                          _transportBaseline == option.value
-                                              ? null
-                                              : option.value;
-                                    });
-                                  },
-                                ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          _pageHeading(
-                            'Daily distance to college or work',
-                            'Optional — used to size your travel impact.',
-                          ),
-                          const SizedBox(height: 8),
-                          TextField(
-                            controller: _commuteController,
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              hintText: 'e.g. 6',
-                              prefixIcon: Icon(Icons.straighten),
-                              suffixText: 'km',
-                            ),
-                          ),
-                        ],
-                      ),
-                      _stepPage(
-                        key: const ValueKey('interests'),
-                        heroFraction: 0.34,
-                        children: [
-                          _pageHeading(
-                            'What interests you most?',
-                            'Choose one or more. Your coach will lean into these.',
-                          ),
-                          const SizedBox(height: 16),
-                          Wrap(
-                            spacing: 10,
-                            runSpacing: 10,
-                            children: [
-                              for (final category in EmissionCategory.values)
-                                _OptionCard(
-                                  label: category.label,
-                                  icon: categoryIcon(category),
-                                  selected: _interests.contains(category),
-                                  onTap: () {
-                                    setState(() {
-                                      if (_interests.contains(category)) {
-                                        _interests.remove(category);
-                                      } else {
-                                        _interests.add(category);
-                                      }
-                                    });
-                                  },
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      _stepPage(
-                        key: const ValueKey('habits'),
-                        heroFraction: 0.3,
-                        children: [
-                          _pageHeading(
-                            'Which habits sound like you?',
-                            'Turn on the ones you already keep.',
-                          ),
-                          const SizedBox(height: 12),
-                          for (final habit in onboardingHabits) ...[
-                            SwitchListTile(
-                              title: Text(habit.label),
-                              value: _habits[habit.id]!,
-                              onChanged: (value) {
-                                setState(() => _habits[habit.id] = value);
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                side: BorderSide(color: scheme.outlineVariant),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 2,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                          ],
-                        ],
-                      ),
-                      _DonePage(
-                        key: const ValueKey('done'),
-                        travelLabel: _travelLabel,
-                        interestsText: _interestsText,
-                        habitsText: _habitsText,
-                      ),
-                    ],
+                        if (current != null) current,
+                      ],
+                    ),
+                    child: _page(),
                   ),
                 ),
                 const SizedBox(height: 20),

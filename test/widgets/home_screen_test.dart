@@ -234,14 +234,11 @@ void main() {
     expect(find.text('10.0 kg'), findsWidgets);
 
     final before = calls;
-    await tester.fling(
-      find.byType(CustomScrollView),
-      const Offset(0, 300),
-      1000,
+    final indicator = tester.state<RefreshIndicatorState>(
+      find.byType(RefreshIndicator),
     );
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 1));
-    await tester.pump(const Duration(seconds: 1));
+    await indicator.show();
+    await tester.pumpAndSettle();
 
     expect(calls, greaterThan(before));
     expect(find.text('20.0 kg'), findsWidgets);
