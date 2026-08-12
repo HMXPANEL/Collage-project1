@@ -238,7 +238,7 @@ void main() {
       final refresh = tester.widget<RefreshIndicator>(
         find.byType(RefreshIndicator),
       );
-      await refresh.onRefresh!();
+      await refresh.onRefresh();
       await tester.pumpAndSettle();
 
       expect(calls, greaterThan(before));
