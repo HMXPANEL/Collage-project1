@@ -590,18 +590,21 @@ class _DonePage extends StatelessWidget {
                         child: Column(
                           children: [
                             _summaryRow(
+                              context,
                               icon: Icons.directions_walk,
                               label: 'Travel',
                               value: travelLabel,
                             ),
                             const SizedBox(height: 14),
                             _summaryRow(
+                              context,
                               icon: Icons.category,
                               label: 'Focus',
                               value: interestsText,
                             ),
                             const SizedBox(height: 14),
                             _summaryRow(
+                              context,
                               icon: Icons.checklist,
                               label: 'Habits',
                               value: habitsText,
@@ -621,7 +624,8 @@ class _DonePage extends StatelessWidget {
     );
   }
 
-  Widget _summaryRow({
+  Widget _summaryRow(
+    BuildContext context, {
     required IconData icon,
     required String label,
     required String value,
