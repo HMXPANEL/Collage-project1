@@ -294,19 +294,6 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
                         child: SlideTransition(position: enter, child: child),
                       );
                     },
-                    layoutBuilder: (context, current, previous) => Stack(
-                      children: [
-                        if (previous != null)
-                          SlideTransition(
-                            position: Tween<Offset>(
-                              begin: Offset.zero,
-                              end: Offset(-0.18 * _direction, 0),
-                            ).animate(animation),
-                            child: previous,
-                          ),
-                        if (current != null) current,
-                      ],
-                    ),
                     child: _page(),
                   ),
                 ),
