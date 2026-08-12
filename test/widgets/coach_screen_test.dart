@@ -35,6 +35,7 @@ void main() {
       find.byType(TextField),
       'what should i do?',
     );
+    await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.send));
     await tester.pumpAndSettle();
 
