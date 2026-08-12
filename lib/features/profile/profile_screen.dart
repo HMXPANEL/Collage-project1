@@ -21,125 +21,144 @@ class ProfileScreen extends ConsumerWidget {
     final streak = ref.watch(dashboardStatsProvider).value?.currentStreak ?? 0;
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
       body: profile == null
-          ? const Center(child: CircularProgressIndicator())
-          : ListView(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-              children: [
-                Entrance(
-                  child: EcoCard(
-                    child: Padding(
-                      padding: const EdgeInsets.all(18),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(14),
-                                decoration: BoxDecoration(
-                                  color: scheme.primaryContainer,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  EcoIcons.profile,
-                                  color: scheme.onPrimaryContainer,
-                                  size: 28,
-                                ),
-                              ),
-                              const SizedBox(width: 14),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+          ? CustomScrollView(
+              slivers: [
+                const EcoAppBar.medium(title: 'Profile'),
+                const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              ],
+            )
+          : CustomScrollView(
+              slivers: [
+                const EcoAppBar.medium(title: 'Profile'),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      Entrance(
+                        child: EcoCard(
+                          child: Padding(
+                            padding: const EdgeInsets.all(18),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
                                   children: [
-                                    Text(
-                                      'Eco profile',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.titleLarge?.copyWith(
-                                            fontWeight: FontWeight.w700,
-                                          ),
+                                    Container(
+                                      padding: const EdgeInsets.all(14),
+                                      decoration: BoxDecoration(
+                                        color: scheme.primaryContainer,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        EcoIcons.profile,
+                                        color: scheme.onPrimaryContainer,
+                                        size: 28,
+                                      ),
                                     ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      _transportLabel(
-                                          profile.transportBaseline),
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodySmall?.copyWith(
-                                            color: scheme.onSurfaceVariant,
+                                    const SizedBox(width: 14),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Eco profile',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.w700,
+                                                ),
                                           ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            _transportLabel(
+                                                profile.transportBaseline),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.copyWith(
+                                                  color:
+                                                      scheme.onSurfaceVariant,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    if (streak > 0) _StreakPill(streak: streak),
+                                  ],
+                                ),
+                                if (profile.interests.isNotEmpty) ...[
+                                  const SizedBox(height: 16),
+                                  Wrap(
+                                    spacing: 8,
+                                    runSpacing: 8,
+                                    children: [
+                                      for (final name in profile.interests)
+                                        EcoChip(
+                                          label: emissionCategoryFromName(name)
+                                              .label,
+                                          icon: categoryIcon(
+                                            emissionCategoryFromName(name),
+                                          ),
+                                          onSelected: (_) {},
+                                        ),
+                                    ],
+                                  ),
+                                ],
+                                const SizedBox(height: 16),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: _MiniStat(
+                                        icon: Icons.eco_outlined,
+                                        value: '${profile.interests.length}',
+                                        label: 'Interests',
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: _MiniStat(
+                                        icon: Icons.check_circle_outline,
+                                        value: '${profile.habits.length}',
+                                        label: 'Habits',
+                                      ),
                                     ),
                                   ],
                                 ),
-                              ),
-                              if (streak > 0) _StreakPill(streak: streak),
-                            ],
-                          ),
-                          if (profile.interests.isNotEmpty) ...[
-                            const SizedBox(height: 16),
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: [
-                                for (final name in profile.interests)
-                                  EcoChip(
-                                    label: emissionCategoryFromName(name).label,
-                                    icon: categoryIcon(
-                                      emissionCategoryFromName(name),
-                                    ),
-                                    onSelected: (_) {},
-                                  ),
                               ],
                             ),
-                          ],
-                          const SizedBox(height: 16),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _MiniStat(
-                                  icon: Icons.eco_outlined,
-                                  value: '${profile.interests.length}',
-                                  label: 'Interests',
-                                ),
-                              ),
-                              Expanded(
-                                child: _MiniStat(
-                                  icon: Icons.check_circle_outline,
-                                  value: '${profile.habits.length}',
-                                  label: 'Habits',
-                                ),
-                              ),
-                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 20),
+                      SectionHeader(
+                        title: 'Your space',
+                        subtitle: 'Everything for your journey',
+                      ),
+                      _LinkTile(
+                        icon: Icons.school,
+                        title: 'Community leaderboard',
+                        subtitle: 'Demo ranking of peers and your college',
+                        onTap: () => context.pushNamed(AppRoutes.community),
+                      ),
+                      _LinkTile(
+                        icon: Icons.assistant,
+                        title: 'Climate Coach',
+                        subtitle: 'Offline, rules-based guidance',
+                        onTap: () => context.pushNamed(AppRoutes.coach),
+                      ),
+                      _LinkTile(
+                        icon: Icons.settings,
+                        title: 'Settings',
+                        subtitle: 'Appearance, region, reminders, data',
+                        onTap: () => context.pushNamed(AppRoutes.settings),
+                      ),
+                    ]),
                   ),
-                ),
-                const SizedBox(height: 20),
-                SectionHeader(
-                  title: 'Your space',
-                  subtitle: 'Everything for your journey',
-                ),
-                _LinkTile(
-                  icon: Icons.school,
-                  title: 'Community leaderboard',
-                  subtitle: 'Demo ranking of peers and your college',
-                  onTap: () => context.pushNamed(AppRoutes.community),
-                ),
-                _LinkTile(
-                  icon: Icons.assistant,
-                  title: 'Climate Coach',
-                  subtitle: 'Offline, rules-based guidance',
-                  onTap: () => context.pushNamed(AppRoutes.coach),
-                ),
-                _LinkTile(
-                  icon: Icons.settings,
-                  title: 'Settings',
-                  subtitle: 'Appearance, region, reminders, data',
-                  onTap: () => context.pushNamed(AppRoutes.settings),
                 ),
               ],
             ),

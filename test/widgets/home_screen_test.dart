@@ -148,4 +148,49 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets('home renders without overflow on a narrow screen',
+      (tester) async {
+    tester.view.physicalSize = const Size(327, 864);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+    final stats = DashboardStats(
+      totalKg: 12.34,
+      totalActions: 2,
+      currentStreak: 2,
+      bestStreak: 4,
+      todayLogs: [
+        ActionLog(
+          actionId: 'walk_short_route',
+          actionTitle: 'Walk to the market',
+          category: 'transport',
+          happenedOn: DateTime(2026, 8, 11, 9),
+          kgCo2e: 0.85,
+        ),
+        ActionLog(
+          actionId: 'reuse_bottle',
+          actionTitle: 'Refill your water bottle',
+          category: 'waste',
+          happenedOn: DateTime(2026, 8, 11, 10),
+          kgCo2e: 0.04,
+        ),
+      ],
+      todayKg: 0.89,
+    );
+
+    await tester.pumpWidget(app(
+      MemoryProfileRepository(
+        profile: const UserProfile(
+          region: 'in',
+          transportBaseline: 'scooter',
+          onboarded: true,
+        ),
+      ),
+      stats: stats,
+    ));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Your climate journey'), findsOneWidget);
+  });
 }

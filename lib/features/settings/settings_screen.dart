@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/router.dart';
 import '../../core/state/providers.dart';
 import '../../core/prefs/app_preferences.dart';
+import '../../core/widgets/ui.dart';
 import '../../domain/models/user_profile.dart';
 import 'data_port.dart';
 
@@ -27,43 +28,57 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final themePref = ref.watch(themePreferenceProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
       body: profile == null
-          ? const Center(child: CircularProgressIndicator())
-          : ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                ..._section(context, 'Appearance', [
-                  _appearanceTile(context, themePref),
-                ]),
-                ..._section(context, 'Personalization', [
-                  _regionTile(profile),
-                  _reminderTile(profile),
-                ]),
-                ..._section(context, 'Privacy', [
-                  ListTile(
-                    leading: const Icon(Icons.shield_outlined),
-                    title: const Text('Privacy policy'),
-                    subtitle: const Text('What we do with your data'),
-                    onTap: () => context.pushNamed(AppRoutes.privacy),
+          ? CustomScrollView(
+              slivers: [
+                const EcoAppBar.medium(title: 'Settings'),
+                const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              ],
+            )
+          : CustomScrollView(
+              slivers: [
+                const EcoAppBar.medium(title: 'Settings'),
+                SliverPadding(
+                  padding: const EdgeInsets.all(16),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      ..._section(context, 'Appearance', [
+                        _appearanceTile(context, themePref),
+                      ]),
+                      ..._section(context, 'Personalization', [
+                        _regionTile(profile),
+                        _reminderTile(profile),
+                      ]),
+                      ..._section(context, 'Privacy', [
+                        ListTile(
+                          leading: const Icon(Icons.shield_outlined),
+                          title: const Text('Privacy policy'),
+                          subtitle: const Text('What we do with your data'),
+                          onTap: () => context.pushNamed(AppRoutes.privacy),
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.info_outline),
+                          title: const Text('About EcoAction'),
+                          subtitle: const Text('Version and credits'),
+                          onTap: () => context.pushNamed(AppRoutes.about),
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.functions),
+                          title: const Text('How we estimate'),
+                          subtitle: const Text('Where the numbers come from'),
+                          onTap: () => context.pushNamed(AppRoutes.methodology),
+                        ),
+                      ]),
+                      ..._section(
+                        context,
+                        'Data management',
+                        _dataTiles(context),
+                      ),
+                    ]),
                   ),
-                  ListTile(
-                    leading: const Icon(Icons.info_outline),
-                    title: const Text('About EcoAction'),
-                    subtitle: const Text('Version and credits'),
-                    onTap: () => context.pushNamed(AppRoutes.about),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.functions),
-                    title: const Text('How we estimate'),
-                    subtitle: const Text('Where the numbers come from'),
-                    onTap: () => context.pushNamed(AppRoutes.methodology),
-                  ),
-                ]),
-                ..._section(
-                  context,
-                  'Data management',
-                  _dataTiles(context),
                 ),
               ],
             ),

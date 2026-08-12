@@ -16,45 +16,69 @@ class CommunityScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final snapshot = ref.watch(communityProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Community')),
       body: snapshot.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('Could not load: $err')),
+        loading: () => const CustomScrollView(
+          slivers: [
+            EcoAppBar.medium(title: 'Community'),
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(child: CircularProgressIndicator()),
+            ),
+          ],
+        ),
+        error: (err, _) => CustomScrollView(
+          slivers: [
+            const EcoAppBar.medium(title: 'Community'),
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(child: Text('Could not load: $err')),
+            ),
+          ],
+        ),
         data: (data) {
           final you = data.currentUser;
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-            children: [
-              const Entrance(child: _DemoNotice()),
-              const SizedBox(height: 12),
-              Entrance(
-                delay: 0.06,
-                child: _CampusCard(collegeTotalKg: data.collegeTotalKg),
-              ),
-              const SizedBox(height: 12),
-              if (you != null)
-                Entrance(delay: 0.12, child: _YourRankCard(you: you))
-              else
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24),
-                  child: Center(
-                    child: Text('Log your first action to join the board'),
-                  ),
+          return CustomScrollView(
+            slivers: [
+              const EcoAppBar.medium(title: 'Community'),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    const Entrance(child: _DemoNotice()),
+                    const SizedBox(height: 12),
+                    Entrance(
+                      delay: 0.06,
+                      child: _CampusCard(collegeTotalKg: data.collegeTotalKg),
+                    ),
+                    const SizedBox(height: 12),
+                    if (you != null)
+                      Entrance(delay: 0.12, child: _YourRankCard(you: you))
+                    else
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24),
+                        child: Center(
+                          child: Text(
+                            'Log your first action to join the board',
+                          ),
+                        ),
+                      ),
+                    SectionHeader(
+                      title: 'Leaderboard',
+                      subtitle: data.isDemo
+                          ? 'Demo peers — not real people'
+                          : 'Ranked by CO₂e avoided',
+                    ),
+                    for (var i = 0; i < data.members.length; i++)
+                      Entrance(
+                        delay: 0.15 + (i * 0.04),
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: _RankTile(member: data.members[i]),
+                        ),
+                      ),
+                  ]),
                 ),
-              SectionHeader(
-                title: 'Leaderboard',
-                subtitle: data.isDemo
-                    ? 'Demo peers — not real people'
-                    : 'Ranked by CO₂e avoided',
               ),
-              for (var i = 0; i < data.members.length; i++)
-                Entrance(
-                  delay: 0.15 + (i * 0.04),
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: _RankTile(member: data.members[i]),
-                  ),
-                ),
             ],
           );
         },

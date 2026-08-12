@@ -50,7 +50,7 @@ class _ActionLogScreenState extends ConsumerState<ActionLogScreen> {
 
     if (action == null || factors == null) {
       return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(backgroundColor: Colors.transparent),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -67,173 +67,183 @@ class _ActionLogScreenState extends ConsumerState<ActionLogScreen> {
 
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: Text(action.title)),
       body: Form(
         key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-          children: [
-            EcoCard(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: scheme.primaryContainer,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            categoryIcon(action.category),
-                            color: scheme.primary,
-                            size: 24,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            action.category.label,
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelMedium
-                                ?.copyWith(
-                                  color: scheme.onSurfaceVariant,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      action.description,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    const SizedBox(height: 12),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: scheme.surfaceContainer,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Row(
+        child: CustomScrollView(
+          slivers: [
+            EcoAppBar.medium(title: action.title),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  EcoCard(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            Icons.eco_outlined,
-                            size: 18,
-                            color: scheme.primary,
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: scheme.primaryContainer,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  categoryIcon(action.category),
+                                  color: scheme.primary,
+                                  size: 24,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  action.category.label,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium
+                                      ?.copyWith(
+                                        color: scheme.onSurfaceVariant,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              'Why it helps: ${action.whyItHelps}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(
-                                    color: scheme.onSurfaceVariant,
+                          const SizedBox(height: 16),
+                          Text(
+                            action.description,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          const SizedBox(height: 12),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: scheme.surfaceContainer,
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.eco_outlined,
+                                  size: 18,
+                                  color: scheme.primary,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    'Why it helps: ${action.whyItHelps}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          color: scheme.onSurfaceVariant,
+                                        ),
                                   ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'How much',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
                   ),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _quantityController,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              decoration: InputDecoration(
-                labelText: action.impact.quantityLabel,
-                prefixIcon: const Icon(Icons.straighten),
-                border: const OutlineInputBorder(),
-              ),
-              validator: (value) {
-                final parsed = double.tryParse((value ?? '').trim());
-                if (parsed == null || parsed <= 0) {
-                  return 'Enter a quantity greater than 0';
-                }
-                return null;
-              },
-              onChanged: (_) => setState(() {}),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Your estimated impact',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
+                  const SizedBox(height: 20),
+                  Text(
+                    'How much',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                   ),
-            ),
-            const SizedBox(height: 8),
-            EcoCard(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: estimate == null
-                    ? Text(
-                        'Enter a quantity to see your impact.',
-                        style: TextStyle(color: scheme.onSurfaceVariant),
-                      )
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AnimatedNumber(
-                            value: estimate.kgCo2e,
-                            format: (v) => '~${Formatting.compactKg(v)}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: -0.5,
-                                  color: scheme.primary,
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    controller: _quantityController,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: action.impact.quantityLabel,
+                      prefixIcon: const Icon(Icons.straighten),
+                      border: const OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      final parsed = double.tryParse((value ?? '').trim());
+                      if (parsed == null || parsed <= 0) {
+                        return 'Enter a quantity greater than 0';
+                      }
+                      return null;
+                    },
+                    onChanged: (_) => setState(() {}),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Your estimated impact',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                  const SizedBox(height: 8),
+                  EcoCard(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: estimate == null
+                          ? Text(
+                              'Enter a quantity to see your impact.',
+                              style: TextStyle(color: scheme.onSurfaceVariant),
+                            )
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AnimatedNumber(
+                                  value: estimate.kgCo2e,
+                                  format: (v) => '~${Formatting.compactKg(v)}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: -0.5,
+                                        color: scheme.primary,
+                                      ),
                                 ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Estimated CO₂e avoided',
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: scheme.onSurfaceVariant,
-                                    ),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            estimate.isProvisional
-                                ? 'Approximate estimate based on a '
-                                    'provisional factor.'
-                                : 'Estimate based on standard emission factors.',
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: scheme.onSurfaceVariant,
-                                    ),
-                          ),
-                        ],
-                      ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Estimated CO₂e avoided',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
+                                        color: scheme.onSurfaceVariant,
+                                      ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  estimate.isProvisional
+                                      ? 'Approximate estimate based on a '
+                                          'provisional factor.'
+                                      : 'Estimate based on standard emission factors.',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
+                                        color: scheme.onSurfaceVariant,
+                                      ),
+                                ),
+                              ],
+                            ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  FilledButton.icon(
+                    onPressed: _submitting ? null : _log,
+                    icon: const Icon(Icons.check),
+                    label: const Text('Log this action'),
+                  ),
+                ]),
               ),
-            ),
-            const SizedBox(height: 24),
-            FilledButton.icon(
-              onPressed: _submitting ? null : _log,
-              icon: const Icon(Icons.check),
-              label: const Text('Log this action'),
             ),
           ],
         ),

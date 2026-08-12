@@ -299,6 +299,61 @@ class EmptyState extends StatelessWidget {
   }
 }
 
+/// App-bar system: one consistent bar for every screen.
+///
+/// [EcoAppBar.medium] — pinned medium bar with the standard title (weight
+/// 600, left-aligned). Use for every titled screen.
+///
+/// [EcoAppBar.large] — collapsing header for hero screens. The [background]
+/// is painted full-bleed and scrolls away ([SliverAppBar] `pinned: false`);
+/// the bar itself stays empty and transparent.
+class EcoAppBar extends StatelessWidget {
+  const EcoAppBar.medium({
+    super.key,
+    required this.title,
+    this.actions = const [],
+  });
+
+  const EcoAppBar.large({
+    super.key,
+    required this.background,
+    this.expandedHeight = 300,
+  });
+
+  /// Title used by [EcoAppBar.medium]. Null for the large header variant.
+  final String? title;
+  final List<Widget> actions;
+
+  /// Full-bleed header content for [EcoAppBar.large].
+  final Widget? background;
+  final double expandedHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    if (background != null) {
+      return SliverAppBar(
+        pinned: false,
+        expandedHeight: expandedHeight,
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        flexibleSpace: FlexibleSpaceBar(background: background),
+      );
+    }
+    final scheme = Theme.of(context).colorScheme;
+    return SliverAppBar.medium(
+      pinned: true,
+      backgroundColor: scheme.surface,
+      surfaceTintColor: Colors.transparent,
+      scrolledUnderElevation: 0,
+      actions: actions,
+      titleTextStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+      title: Text(title!),
+    );
+  }
+}
+
 /// Staggered fade-and-rise entrance. Give consecutive children increasing
 /// [delay] fractions (0, 0.1, 0.2, ...) for a cascading reveal.
 class Entrance extends StatelessWidget {

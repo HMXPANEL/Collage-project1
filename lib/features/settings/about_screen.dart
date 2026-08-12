@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/router.dart';
+import '../../core/widgets/ui.dart';
 
 /// App information and credits.
 class AboutScreen extends StatelessWidget {
@@ -11,13 +12,16 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: const Text('About')),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+      body: CustomScrollView(
+        slivers: [
+          const EcoAppBar.medium(title: 'About'),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
               Icon(Icons.eco, size: 64, color: scheme.primary),
               const SizedBox(height: 12),
               Text('EcoAction',
@@ -38,8 +42,9 @@ class AboutScreen extends StatelessWidget {
                 label: const Text('Read how we estimate'),
               ),
             ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

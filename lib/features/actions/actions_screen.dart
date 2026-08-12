@@ -6,6 +6,7 @@ import '../../core/state/providers.dart';
 import '../../core/widgets/category_icon.dart';
 import '../../core/widgets/eco_card.dart';
 import '../../core/widgets/estimate_chip.dart';
+import '../../core/widgets/ui.dart';
 import '../../domain/engines/impact_engine.dart';
 import '../../domain/models/eco_action.dart';
 import '../../domain/models/emission_factor.dart';
@@ -20,14 +21,34 @@ class ActionsScreen extends ConsumerWidget {
     final factorsAsync = ref.watch(emissionFactorsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Take Action')),
       body: switch ((actionsAsync, factorsAsync)) {
         (AsyncData(value: final actions), AsyncData(value: final factors)) =>
-          _CatalogList(actions: actions, factors: factors),
+          CustomScrollView(
+            slivers: [
+              const EcoAppBar.medium(title: 'Take Action'),
+              _CatalogSliver(actions: actions, factors: factors),
+            ],
+          ),
         (AsyncError(error: final error), _) ||
         (_, AsyncError(error: final error)) =>
-          _CatalogError(error: error, ref: ref),
-        _ => const Center(child: CircularProgressIndicator()),
+          CustomScrollView(
+            slivers: [
+              const EcoAppBar.medium(title: 'Take Action'),
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: _CatalogError(error: error, ref: ref),
+              ),
+            ],
+          ),
+        _ => CustomScrollView(
+            slivers: [
+              const EcoAppBar.medium(title: 'Take Action'),
+              const SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(child: CircularProgressIndicator()),
+              ),
+            ],
+          ),
       },
     );
   }
@@ -62,8 +83,8 @@ class _CatalogError extends StatelessWidget {
   }
 }
 
-class _CatalogList extends StatelessWidget {
-  const _CatalogList({required this.actions, required this.factors});
+class _CatalogSliver extends StatelessWidget {
+  const _CatalogSliver({required this.actions, required this.factors});
 
   final List<EcoAction> actions;
   final Map<String, EmissionFactor> factors;
@@ -78,31 +99,33 @@ class _CatalogList extends StatelessWidget {
     }
     final engine = const ImpactEngine();
 
-    return ListView(
+    return SliverPadding(
       padding: const EdgeInsets.all(16),
-      children: [
-        for (final category in EmissionCategory.values)
-          if (grouped[category]!.isNotEmpty) ...[
-            Padding(
-              padding: const EdgeInsets.only(top: 8, bottom: 8),
-              child: Text(
-                category.label,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
-            for (final action in grouped[category]!)
+      sliver: SliverList(
+        delegate: SliverChildListDelegate([
+          for (final category in EmissionCategory.values)
+            if (grouped[category]!.isNotEmpty) ...[
               Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: _ActionTile(
-                  action: action,
-                  defaultEstimate: engine.estimate(
-                    spec: action.impact,
-                    factors: factors,
-                  ),
+                padding: const EdgeInsets.only(top: 8, bottom: 8),
+                child: Text(
+                  category.label,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
-          ],
-      ],
+              for (final action in grouped[category]!)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: _ActionTile(
+                    action: action,
+                    defaultEstimate: engine.estimate(
+                      spec: action.impact,
+                      factors: factors,
+                    ),
+                  ),
+                ),
+            ],
+        ]),
+      ),
     );
   }
 }

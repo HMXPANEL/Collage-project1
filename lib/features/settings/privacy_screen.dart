@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/widgets/ui.dart';
+
 /// Local-first privacy statement. Plain text, no external services.
 class PrivacyScreen extends StatelessWidget {
   const PrivacyScreen({super.key});
@@ -8,10 +10,13 @@ class PrivacyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final body = Theme.of(context).textTheme.bodyMedium;
     return Scaffold(
-      appBar: AppBar(title: const Text('Privacy')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
+      body: CustomScrollView(
+        slivers: [
+          const EcoAppBar.medium(title: 'Privacy'),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
           Text(
             'Your data stays on this device.',
             style: Theme.of(context).textTheme.titleMedium,
@@ -32,6 +37,8 @@ class PrivacyScreen extends StatelessWidget {
               'The app, including the climate coach, works without an internet connection.'),
           _point(context, Icons.folder_copy_outlined, 'You stay in control',
               'Export a backup anytime to keep a copy of your data, and delete everything whenever you want.'),
+        ]),
+          ),
         ],
       ),
     );

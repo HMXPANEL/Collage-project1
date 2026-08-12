@@ -160,7 +160,7 @@ abstract final class EcoActionTheme {
         centerTitle: false,
         titleTextStyle: textTheme.titleLarge?.copyWith(
           color: scheme.onSurface,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
         ),
       ),
       cardTheme: CardThemeData(

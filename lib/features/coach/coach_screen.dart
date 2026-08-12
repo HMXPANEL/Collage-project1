@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/motion/eco_motion.dart';
 import '../../core/state/providers.dart';
+import '../../core/widgets/ui.dart';
 import '../../domain/models/user_profile.dart';
 import 'coach_engine.dart';
 
@@ -81,31 +82,41 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Climate Coach'),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Chip(label: Text('Offline')),
-          ),
-        ],
-      ),
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
+            child: CustomScrollView(
               controller: _scroll,
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-              itemCount: _messages.length + (_showSuggestions ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (_showSuggestions && index == _messages.length) {
-                  return _Suggestions(
-                    suggestions: _suggestions,
-                    onPick: _send,
-                  );
-                }
-                return _AnimatedMessage(message: _messages[index]);
-              },
+              slivers: [
+                const EcoAppBar.medium(
+                  title: 'Climate Coach',
+                  actions: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 16),
+                      child: Chip(label: Text('Offline')),
+                    ),
+                  ],
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        if (_showSuggestions && index == _messages.length) {
+                          return _Suggestions(
+                            suggestions: _suggestions,
+                            onPick: _send,
+                          );
+                        }
+                        return _AnimatedMessage(
+                          message: _messages[index],
+                        );
+                      },
+                      childCount: _messages.length + (_showSuggestions ? 1 : 0),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Container(

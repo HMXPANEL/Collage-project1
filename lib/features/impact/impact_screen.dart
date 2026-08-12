@@ -31,71 +31,97 @@ class ImpactScreen extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('My Impact')),
       body: switch (summaryAsync) {
-        AsyncData(value: final summary) => ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-            children: [
-              _HeroCard(summary: summary),
-              const SizedBox(height: 12),
-              _RangePills(
-                selected: selected,
-                onSelected: (days) {
-                  ref.read(impactRangeProvider.notifier).state = days;
-                },
-              ),
-              SectionHeader(
-                title: _rangeTitle(selected),
-                subtitle: 'Estimated CO₂e avoided per day',
-              ),
-              if (summary.totalKg <= 0)
-                EmptyState(
-                  icon: Icons.insights,
-                  title: 'Your impact story starts here.',
-                  message: 'Log your first action to see your progress.',
-                )
-              else
-                Entrance(
-                  child: _ImpactChart(
-                    buckets: summary.dailyKg.isEmpty
-                        ? summary.lastSevenDaysKg
-                        : summary.dailyKg,
-                    startDay: DateTime.now().subtract(
-                      Duration(
-                        days: (summary.dailyKg.isEmpty
-                                    ? summary.lastSevenDaysKg
-                                    : summary.dailyKg)
-                                .length -
-                            1,
-                      ),
+        AsyncData(value: final summary) => CustomScrollView(
+            slivers: [
+              const EcoAppBar.medium(title: 'My Impact'),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    _HeroCard(summary: summary),
+                    const SizedBox(height: 12),
+                    _RangePills(
+                      selected: selected,
+                      onSelected: (days) {
+                        ref.read(impactRangeProvider.notifier).state = days;
+                      },
                     ),
-                  ),
+                    SectionHeader(
+                      title: _rangeTitle(selected),
+                      subtitle: 'Estimated CO₂e avoided per day',
+                    ),
+                    if (summary.totalKg <= 0)
+                      EmptyState(
+                        icon: Icons.insights,
+                        title: 'Your impact story starts here.',
+                        message: 'Log your first action to see your progress.',
+                      )
+                    else
+                      Entrance(
+                        child: _ImpactChart(
+                          buckets: summary.dailyKg.isEmpty
+                              ? summary.lastSevenDaysKg
+                              : summary.dailyKg,
+                          startDay: DateTime.now().subtract(
+                            Duration(
+                              days: (summary.dailyKg.isEmpty
+                                          ? summary.lastSevenDaysKg
+                                          : summary.dailyKg)
+                                      .length -
+                                  1,
+                            ),
+                          ),
+                        ),
+                      ),
+                    SectionHeader(
+                      title: 'By category',
+                      subtitle: 'Estimates based on emission factors',
+                    ),
+                    _CategoryBreakdown(categoryKg: summary.categoryKg),
+                    const SizedBox(height: 8),
+                    _HowWeEstimateRow(),
+                  ]),
                 ),
-              SectionHeader(
-                title: 'By category',
-                subtitle: 'Estimates based on emission factors',
               ),
-              _CategoryBreakdown(categoryKg: summary.categoryKg),
-              const SizedBox(height: 8),
-              _HowWeEstimateRow(),
             ],
           ),
-        AsyncError() => Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.error_outline, size: 40, color: scheme.error),
-                const SizedBox(height: 8),
-                const Text('Could not load your impact history.'),
-                const SizedBox(height: 12),
-                FilledButton.tonal(
-                  onPressed: () => ref.invalidate(impactProvider),
-                  child: const Text('Retry'),
+        AsyncError() => CustomScrollView(
+            slivers: [
+              const EcoAppBar.medium(title: 'My Impact'),
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 40,
+                        color: scheme.error,
+                      ),
+                      const SizedBox(height: 8),
+                      const Text('Could not load your impact history.'),
+                      const SizedBox(height: 12),
+                      FilledButton.tonal(
+                        onPressed: () => ref.invalidate(impactProvider),
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        _ => const Center(child: CircularProgressIndicator()),
+        _ => CustomScrollView(
+            slivers: [
+              const EcoAppBar.medium(title: 'My Impact'),
+              const SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(child: CircularProgressIndicator()),
+              ),
+            ],
+          ),
       },
     );
   }

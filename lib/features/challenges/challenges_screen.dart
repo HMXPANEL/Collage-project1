@@ -51,57 +51,84 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen> {
     final snapshotAsync = ref.watch(challengesProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Challenges')),
       body: switch (snapshotAsync) {
-        AsyncData(value: final snapshot) => ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-            children: [
-              Entrance(child: _StreakCard(streak: snapshot.currentStreak)),
-              const SizedBox(height: 16),
-              _FilterTabs(
-                filter: _filter,
-                onChanged: (filter) => setState(() => _filter = filter),
-              ),
-              SectionHeader(
-                title: 'Active challenges',
-                subtitle: 'Rolling windows over the last days',
-              ),
-              if (snapshot.challenges.isEmpty)
-                EmptyState(
-                  icon: Icons.emoji_events_outlined,
-                  title: 'New challenges are coming soon.',
-                  message:
-                      'Check back later for fresh ways to build your streak.',
-                )
-              else
-                for (final progress in _visible(snapshot))
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Entrance(
-                      delay: 0.05,
-                      child: _ChallengeTile(progress: progress),
+        AsyncData(value: final snapshot) => CustomScrollView(
+            slivers: [
+              const EcoAppBar.medium(title: 'Challenges'),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    Entrance(
+                        child: _StreakCard(streak: snapshot.currentStreak)),
+                    const SizedBox(height: 16),
+                    _FilterTabs(
+                      filter: _filter,
+                      onChanged: (filter) => setState(() => _filter = filter),
                     ),
-                  ),
-              SectionHeader(title: 'Badges', subtitle: 'Milestones you earned'),
-              Entrance(child: _BadgeGrid(snapshot: snapshot)),
+                    SectionHeader(
+                      title: 'Active challenges',
+                      subtitle: 'Rolling windows over the last days',
+                    ),
+                    if (snapshot.challenges.isEmpty)
+                      EmptyState(
+                        icon: Icons.emoji_events_outlined,
+                        title: 'New challenges are coming soon.',
+                        message:
+                            'Check back later for fresh ways to build your '
+                            'streak.',
+                      )
+                    else
+                      for (final progress in _visible(snapshot))
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Entrance(
+                            delay: 0.05,
+                            child: _ChallengeTile(progress: progress),
+                          ),
+                        ),
+                    SectionHeader(
+                      title: 'Badges',
+                      subtitle: 'Milestones you earned',
+                    ),
+                    Entrance(child: _BadgeGrid(snapshot: snapshot)),
+                  ]),
+                ),
+              ),
             ],
           ),
-        AsyncError() => Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.error_outline, size: 40),
-                const SizedBox(height: 8),
-                const Text('Could not load challenges.'),
-                const SizedBox(height: 12),
-                FilledButton.tonal(
-                  onPressed: () => ref.invalidate(challengesProvider),
-                  child: const Text('Retry'),
+        AsyncError() => CustomScrollView(
+            slivers: [
+              const EcoAppBar.medium(title: 'Challenges'),
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.error_outline, size: 40),
+                      const SizedBox(height: 8),
+                      const Text('Could not load challenges.'),
+                      const SizedBox(height: 12),
+                      FilledButton.tonal(
+                        onPressed: () => ref.invalidate(challengesProvider),
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        _ => const Center(child: CircularProgressIndicator()),
+        _ => CustomScrollView(
+            slivers: [
+              const EcoAppBar.medium(title: 'Challenges'),
+              const SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(child: CircularProgressIndicator()),
+              ),
+            ],
+          ),
       },
     );
   }
