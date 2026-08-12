@@ -245,8 +245,6 @@ void main() {
       expect(find.text('20.0 kg'), findsWidgets);
     } catch (e, st) {
       // ignore: avoid_print
-      print('REFRESH FAIL calls=$calls before=$before');
-      // ignore: avoid_print
       print(
         'REFRESH TEXTS: ${tester.widgetList<Text>(find.byType(Text)).map((t) => t.data).whereType<String>().toList()}',
       );
