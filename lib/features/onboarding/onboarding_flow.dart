@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants.dart';
 import '../../core/state/providers.dart';
 import '../../core/widgets/category_icon.dart';
-import '../../core/widgets/eco_illustration.dart';
 import '../../core/widgets/ui.dart';
 import '../../domain/models/emission_factor.dart';
 import '../../domain/models/onboarding_habits.dart';
@@ -127,17 +126,14 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
       0 => const _WelcomePage(key: ValueKey('welcome')),
       1 => _stepPage(
           key: const ValueKey('transport'),
-          heroFraction: 0.34,
           children: _transportChildren(),
         ),
       2 => _stepPage(
           key: const ValueKey('interests'),
-          heroFraction: 0.34,
           children: _interestsChildren(),
         ),
       3 => _stepPage(
           key: const ValueKey('habits'),
-          heroFraction: 0.3,
           children: _habitsChildren(),
         ),
       _ => _DonePage(
@@ -150,10 +146,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
   }
 
   List<Widget> _transportChildren() => [
-        _pageHeading(
-          'How do you usually travel?',
-          'Pick the option that sounds most like you.',
-        ),
+        _pageHeading('How do you usually travel?'),
         const SizedBox(height: 16),
         Wrap(
           spacing: 10,
@@ -192,10 +185,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
       ];
 
   List<Widget> _interestsChildren() => [
-        _pageHeading(
-          'What interests you most?',
-          'Choose one or more. Your coach will lean into these.',
-        ),
+        _pageHeading('What interests you most?'),
         const SizedBox(height: 16),
         Wrap(
           spacing: 10,
@@ -221,10 +211,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
       ];
 
   List<Widget> _habitsChildren() => [
-        _pageHeading(
-          'Which habits sound like you?',
-          'Turn on the ones you already keep.',
-        ),
+        _pageHeading('Which habits sound like you?'),
         const SizedBox(height: 12),
         for (final habit in onboardingHabits) ...[
           SwitchListTile(
@@ -307,45 +294,23 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
     );
   }
 
-  /// Shared layout for the three question steps: a scrolling page with the
-  /// sprout illustration pinned on top, sized to the available height.
-  Widget _stepPage({
-    Key? key,
-    required double heroFraction,
-    required List<Widget> children,
-  }) {
-    return LayoutBuilder(
+  /// Shared layout for the three question steps: a compact top-aligned
+  /// scrolling page, so editing content reflows upward with no dead space.
+  Widget _stepPage({Key? key, required List<Widget> children}) {
+    return SingleChildScrollView(
       key: key,
-      builder: (context, constraints) {
-        final hero = (constraints.maxHeight * heroFraction)
-            .clamp(100.0, 170.0)
-            .toDouble();
-        return SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 480),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(
-                      height: hero,
-                      child: const EcoIllustration(
-                        variant: EcoIllustrationVariant.sprout,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    ...children,
-                    const SizedBox(height: 16),
-                  ],
-                ),
-              ),
-            ),
+      padding: const EdgeInsets.only(top: 4, bottom: 16),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 480),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: children,
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -372,7 +337,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
     return Align(alignment: Alignment.centerRight, child: button);
   }
 
-  Widget _pageHeading(String title, String subtitle) {
+  Widget _pageHeading(String title, [String? subtitle]) {
     final scheme = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -383,13 +348,15 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
                 fontWeight: FontWeight.w700,
               ),
         ),
-        const SizedBox(height: 4),
-        Text(
-          subtitle,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: scheme.onSurfaceVariant,
-              ),
-        ),
+        if (subtitle != null) ...[
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                ),
+          ),
+        ],
       ],
     );
   }
@@ -447,7 +414,7 @@ class _WelcomePage extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final hero =
-            (constraints.maxHeight * 0.44).clamp(130.0, 250.0).toDouble();
+            (constraints.maxHeight * 0.44).clamp(140.0, 320.0).toDouble();
         return SingleChildScrollView(
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
@@ -469,10 +436,10 @@ class _WelcomePage extends StatelessWidget {
                       child: SizedBox(
                         height: hero,
                         width: double.infinity,
-                        child: const EcoIllustration(
-                          variant: EcoIllustrationVariant.leaf,
-                          color: _heroLeaf,
-                          glow: _heroLeaf,
+                        child: Image.asset(
+                          AppConstants.welcomeImageAsset,
+                          fit: BoxFit.contain,
+                          alignment: Alignment.center,
                         ),
                       ),
                     ),
@@ -544,7 +511,7 @@ class _DonePage extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final hero =
-            (constraints.maxHeight * 0.38).clamp(120.0, 220.0).toDouble();
+            (constraints.maxHeight * 0.38).clamp(130.0, 300.0).toDouble();
         return SingleChildScrollView(
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
@@ -558,10 +525,10 @@ class _DonePage extends StatelessWidget {
                       child: SizedBox(
                         height: hero,
                         width: double.infinity,
-                        child: const EcoIllustration(
-                          variant: EcoIllustrationVariant.leaf,
-                          color: _heroLeaf,
-                          glow: _heroLeaf,
+                        child: Image.asset(
+                          AppConstants.allSetImageAsset,
+                          fit: BoxFit.contain,
+                          alignment: Alignment.center,
                         ),
                       ),
                     ),

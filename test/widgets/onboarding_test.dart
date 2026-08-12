@@ -1,6 +1,5 @@
 import 'package:eco_action/app.dart';
 import 'package:eco_action/core/state/providers.dart';
-import 'package:eco_action/core/widgets/eco_illustration.dart';
 import 'package:eco_action/features/home/dashboard_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -93,7 +92,7 @@ void main() {
 
       expect(find.byType(NavigationBar), findsOneWidget);
       expect(
-        find.text('Your climate journey').hitTestable(),
+        find.text('Small steps, big impact.').hitTestable(),
         findsOneWidget,
       );
     } catch (e, st) {
@@ -133,9 +132,9 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Welcome shows the large hero illustration and the EcoAction brand.
+      // Welcome shows the large hero artwork and the EcoAction brand.
       expect(find.text('EcoAction'), findsOneWidget);
-      expect(find.byType(EcoIllustration), findsOneWidget);
+      expect(find.byType(Image), findsOneWidget);
 
       await tester.tap(find.text('Get Started'));
       await tester.pumpAndSettle();

@@ -191,7 +191,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);
-    expect(find.text('Your climate journey'), findsOneWidget);
+    expect(find.text('Small steps, big impact.'), findsOneWidget);
   });
 
   testWidgets('pulling down at the top refreshes the dashboard stats',
@@ -208,7 +208,7 @@ void main() {
             currentStreak: 0,
             bestStreak: 0,
             todayLogs: [],
-            todayKg: 0,
+            todayKg: calls * 10.0,
           );
 
       await tester.pumpWidget(ProviderScope(

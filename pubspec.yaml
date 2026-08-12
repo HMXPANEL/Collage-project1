@@ -30,3 +30,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/content/
+    - assets/onboarding welcome.png
+    - assets/onboarding all set.png

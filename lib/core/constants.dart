@@ -11,4 +11,8 @@ abstract final class AppConstants {
   static const String factorsAsset = 'assets/content/factors.json';
   static const String badgesAsset = 'assets/content/badges.json';
   static const String challengesAsset = 'assets/content/challenges.json';
+
+  /// First-run onboarding artwork (large hero and all-set leaves).
+  static const String welcomeImageAsset = 'assets/onboarding welcome.png';
+  static const String allSetImageAsset = 'assets/onboarding all set.png';
 }

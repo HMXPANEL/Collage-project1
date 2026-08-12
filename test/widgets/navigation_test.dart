@@ -103,7 +103,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text('Your climate journey').hitTestable(),
+      find.text('Small steps, big impact.').hitTestable(),
       findsOneWidget,
     );
 
@@ -114,7 +114,7 @@ void main() {
       findsWidgets,
     );
     expect(
-      find.text('Your climate journey').hitTestable(),
+      find.text('Small steps, big impact.').hitTestable(),
       findsNothing,
     );
 

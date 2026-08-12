@@ -24,16 +24,11 @@ class HomeScreen extends ConsumerWidget {
       body: stats == null
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
-              onRefresh: () {
-                ref.invalidate(dashboardStatsProvider);
-                return Future<void>.value();
-              },
+              onRefresh: () => ref.refresh(dashboardStatsProvider.future),
               child: CustomScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [
-                  SliverToBoxAdapter(
-                    child: _HeroHeader(totalKg: stats.totalKg),
-                  ),
+                  const SliverToBoxAdapter(child: _GreetingHeader()),
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
                     sliver: SliverList(
@@ -123,11 +118,9 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-/// Full-bleed hero header for the Home tab. Scrolls away with the page.
-class _HeroHeader extends StatelessWidget {
-  const _HeroHeader({required this.totalKg});
-
-  final double totalKg;
+/// Full-bleed greeting header for the Home tab. Scrolls away with the page.
+class _GreetingHeader extends StatelessWidget {
+  const _GreetingHeader();
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +142,7 @@ class _HeroHeader extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,39 +162,19 @@ class _HeroHeader extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 12),
               Text(
                 greeting,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w600,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
                     ),
               ),
               const SizedBox(height: 2),
               Text(
-                'Your climate journey',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-              ),
-              const SizedBox(height: 18),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.centerLeft,
-                child: AnimatedNumber(
-                  value: totalKg,
-                  format: Formatting.compactKg,
-                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -1,
-                      ),
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'lifetime CO₂e avoided · estimate',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                'Small steps, big impact.',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: scheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
                     ),
               ),
             ],
